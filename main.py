@@ -1,27 +1,51 @@
 import tkinter as tk
+# from floorplan_icons import *
 
 root = tk.Tk()
 root.title('Inventory Locations')
 # root.iconbitmap("\\images\\greeen_circle.png")
 root.geometry("800x600")
 
+all_devices = []
 w = 600
 h = 400
 # Starting coordinates of the circle
 x = w//2
 y = h//2
 
+
+class DeviceIcon(tk.Frame):
+    def __init__(self, new_x, new_y, img):
+        self.x = new_x
+        self.y = new_y
+        self.img = img
+        self.device_icon_green = canvas.create_image(self.x, self.y, image=img)
+        all_devices.append(self)
+        for d in all_devices:
+            print(d.x, d.y)
+        # self.device_icon_green.bind("<Enter>", self.on_enter)
+        # self.icon.bind("<Leave>", self.on_leave)
+
+
 # Likely going to be the layout of the floorplan
 canvas = tk.Canvas(root, width=w, height=h, bg="white")
 canvas.pack(pady=20)
 # device_icon = canvas.create_oval(x, y, x+10, y+10, fill="green")
 img = tk.PhotoImage(file="images\\green_circle.png")
-device_icon_green = canvas.create_image(x, y, image=img)
+# device_icon_green = canvas.create_image(x, y, image=img)
+
+
+def new_icon(e):
+    print(e.x)
+    print(e.y)
+    DeviceIcon(new_x=e.x, new_y=e.y, img=img)
 
 
 def move(e):
     global img
     img = tk.PhotoImage(file="images\\green_circle.png")
+    print(e.x)
+    print(e.y)
     # if x-20 >= e.x <= x+20 and y-20 >= e.y <= y+20:
     device_icon_green = canvas.create_image(e.x, e.y, image=img)
         # device_icon = canvas.create_oval(e.x-5, e.y-5, e.x+5, e.y+5, fill="green")
@@ -36,7 +60,11 @@ circle_label.pack(pady=50)
 my_label = tk.Label(root, text="")
 my_label.pack(pady=20)
 # B1-Motion is when button one is pressed on mouse
-canvas.bind("<B1-Motion>", move)
+# canvas.bind("<B1-Motion>", move)
+canvas.bind("<Button 1>", new_icon)
+# canvas.bind("<Enter>", print_true)
 
+
+# DeviceIcon(root).pack(side="top", fill="both", expand="true")
 
 root.mainloop()
