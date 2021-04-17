@@ -1,34 +1,21 @@
 import tkinter as tk
-# from floorplan_icons import *
-
-root = tk.Tk()
-root.title('Inventory Locations')
-# root.iconbitmap("\\images\\greeen_circle.png")
-root.geometry("800x600")
-
-all_devices = []
-w = 600
-h = 400
-# Starting coordinates of the circle
-x = w//2
-y = h//2
-
-
-class DeviceIcon(tk.Frame):
-    def __init__(self, new_x, new_y, img):
-        self.x = new_x
-        self.y = new_y
-        self.img = img
-        self.device_icon_green = canvas.create_image(self.x, self.y, image=img)
-        all_devices.append(self)
-        for d in all_devices:
-            print(d.x, d.y)
-        # self.device_icon_green.bind("<Enter>", self.on_enter)
-        # self.icon.bind("<Leave>", self.on_leave)
+import floorplan_icons
+from setup import *
+# root = tk.Tk()
+# root.title('Inventory Locations')
+# # root.iconbitmap("\\images\\greeen_circle.png")
+# root.geometry("800x600")
+#
+# all_devices = []
+# w = 600
+# h = 400
+# # Starting coordinates of the circle
+# x = w//2
+# y = h//2
 
 
 # Likely going to be the layout of the floorplan
-canvas = tk.Canvas(root, width=w, height=h, bg="white")
+# canvas = tk.Canvas(root, width=w, height=h, bg="white")
 canvas.pack(pady=20)
 # device_icon = canvas.create_oval(x, y, x+10, y+10, fill="green")
 img = tk.PhotoImage(file="images\\green_circle.png")
@@ -38,7 +25,7 @@ img = tk.PhotoImage(file="images\\green_circle.png")
 def new_icon(e):
     print(e.x)
     print(e.y)
-    DeviceIcon(new_x=e.x, new_y=e.y, img=img)
+    floorplan_icons.DeviceIcon(new_x=e.x, new_y=e.y, img=img)
 
 
 def move(e):
