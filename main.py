@@ -25,7 +25,8 @@ img = tk.PhotoImage(file="images\\green_circle.png")
 def new_icon(e):
     print(e.x)
     print(e.y)
-    floorplan_icons.DeviceIcon(new_x=e.x, new_y=e.y, img=img)
+    global canvas
+    floorplan_icons.DeviceIcon(new_x=e.x, new_y=e.y, img=img, canvas=canvas)
 
 
 def move(e):

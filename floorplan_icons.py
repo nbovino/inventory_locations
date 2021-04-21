@@ -6,15 +6,26 @@ from setup import *
 
 
 class DeviceIcon(tk.Frame):
-    def __init__(self, new_x, new_y, img):
+    def __init__(self, new_x, new_y, img, canvas):
         self.x = new_x
         self.y = new_y
         self.img = img
+        self.canvas = canvas
         self.device_icon_green = canvas.create_image(self.x, self.y, image=img)
         all_devices.append(self)
         for d in all_devices:
             print(d.x, d.y)
+        self.canvas.bind("<B1-Motion>", self.move_image)
 
+    def move_image(self, event):
+        # delete the old image
+        self.canvas.delete(self.img)
+        # get the mouse position
+        x = event.x
+        y = event.y
+        # create the new image at position x, y
+        self.img = self.canvas.create_image(x, y, image=self.img)
+        self.canvas.update()
 
 
 
