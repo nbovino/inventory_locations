@@ -22,12 +22,12 @@ img = tk.PhotoImage(file="images\\green_circle.png")
 # device_icon_green = canvas.create_image(x, y, image=img)
 
 
-def new_icon(e):
-    print(e.x)
-    print(e.y)
-    global canvas
-    # floorplan_icons.DeviceIcon(new_x=e.x, new_y=e.y, img=img, canvas=canvas)
-    floorplan_icons.DeviceIcon(canvas, "green_circle.png", e.x, e.y)
+# def new_icon(e):
+#     print(e.x)
+#     print(e.y)
+#     global canvas
+#     # floorplan_icons.DeviceIcon(new_x=e.x, new_y=e.y, img=img, canvas=canvas)
+#     floorplan_icons.DeviceIcon(canvas, "green_circle.png", e.x, e.y)
 
 def move(e):
     global img
@@ -49,7 +49,10 @@ my_label = tk.Label(root, text="")
 my_label.pack(pady=20)
 # B1-Motion is when button one is pressed on mouse
 # canvas.bind("<B1-Motion>", move)
-canvas.bind("<Button 1>", new_icon)
+# canvas.bind("<Button 1>", new_icon)
+floorplan_icons.DeviceIcon(canvas, "green_circle.png", 100, 200)
+floorplan_icons.DeviceIcon(canvas, "green_circle.png", 100, 300)
+floorplan_icons.DeviceIcon(canvas, "green_circle.png", 100, 400)
 # canvas.bind("<Enter>", print_true)
 
 

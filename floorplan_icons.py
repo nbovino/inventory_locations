@@ -37,6 +37,7 @@ class DeviceIcon(object):
             self.mouse_ypos = event.y
 
     def release(self, event):
+        print(event.x, event.y)
         self.move_flag = False
 
 
