@@ -26,8 +26,8 @@ def new_icon(e):
     print(e.x)
     print(e.y)
     global canvas
-    floorplan_icons.DeviceIcon(new_x=e.x, new_y=e.y, img=img, canvas=canvas)
-
+    # floorplan_icons.DeviceIcon(new_x=e.x, new_y=e.y, img=img, canvas=canvas)
+    floorplan_icons.DeviceIcon(canvas, "green_circle.png", e.x, e.y)
 
 def move(e):
     global img
