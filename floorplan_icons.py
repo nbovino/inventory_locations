@@ -16,6 +16,7 @@ class DeviceIcon(object):
             file="{}{}".format(IMAGE_PATH, image_name))
         self.image_obj = canvas.create_image(
             xpos, ypos, image=self.tk_image)
+        self.image_path = IMAGE_PATH + image_name
 
         canvas.tag_bind(self.image_obj, '<Button1-Motion>', self.move)
         canvas.tag_bind(self.image_obj, '<ButtonRelease-1>', self.release)
@@ -38,6 +39,7 @@ class DeviceIcon(object):
 
     def release(self, event):
         print(event.x, event.y)
+        self.xpos, self.ypos = event.x, event.y
         self.move_flag = False
 
 
