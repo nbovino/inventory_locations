@@ -1,6 +1,8 @@
 import tkinter as tk
 
 IMAGE_PATH = "images/"
+LAYOUTS_PATH = "layouts/"
+DEVICE_ICONS_PATH = "device_icons/"
 root = tk.Tk()
 root.title('Inventory Locations')
 # root.iconbitmap("\\images\\greeen_circle.png")

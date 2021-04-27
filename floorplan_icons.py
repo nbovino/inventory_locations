@@ -2,7 +2,7 @@
 # and it will be a green circle that you an move around but only if you click where the circle is
 import tkinter as tk
 from setup import *
-from setup import IMAGE_PATH
+# from setup import IMAGE_PATH
 # from main import canvas
 
 
@@ -13,10 +13,10 @@ class DeviceIcon(object):
         self.xpos, self.ypos = xpos, ypos
 
         self.tk_image = tk.PhotoImage(
-            file="{}{}".format(IMAGE_PATH, image_name))
+            file="{}{}".format(IMAGE_PATH + DEVICE_ICONS_PATH, image_name))
         self.image_obj = canvas.create_image(
             xpos, ypos, image=self.tk_image)
-        self.image_path = IMAGE_PATH + image_name
+        self.image_path = IMAGE_PATH + DEVICE_ICONS_PATH + image_name
 
         canvas.tag_bind(self.image_obj, '<Button1-Motion>', self.move)
         canvas.tag_bind(self.image_obj, '<ButtonRelease-1>', self.release)

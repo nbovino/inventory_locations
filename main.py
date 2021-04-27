@@ -2,6 +2,7 @@
 import floorplan_icons
 from setup import *
 import pickle
+import PIL
 import os.path
 from os import path
 
@@ -22,8 +23,12 @@ from os import path
 # canvas = tk.Canvas(root, width=w, height=h, bg="white")
 canvas.pack(pady=20)
 # device_icon = canvas.create_oval(x, y, x+10, y+10, fill="green")
-img = tk.PhotoImage(file="images\\green_circle.png")
 # device_icon_green = canvas.create_image(x, y, image=img)
+
+# img = tk.PhotoImage(file="images\\green_circle.png")
+floorplan_path = IMAGE_PATH + LAYOUTS_PATH + "apartment.png"
+apt_img = tk.PhotoImage(file=floorplan_path, )
+canvas.create_image(1, 1, image=apt_img)
 
 
 # def new_icon(e):
@@ -67,8 +72,14 @@ def save_devices():
     pickle_out.close()
     print("SAVED DEVICES!!!!")
 
+
+def add_device():
+    print("New device code to add")
+
 save_button = tk.Button(root, text="Save", command=save_devices)
 save_button.pack(pady=20)
+new_device_button = tk.Button(root, text="Add Device", command=add_device)
+new_device_button.pack(padx=30)
 # B1-Motion is when button one is pressed on mouse
 # canvas.bind("<B1-Motion>", move)
 # canvas.bind("<Button 1>", new_icon)
@@ -79,7 +90,7 @@ if path.exists("saved_locations/devices.pk1"):
     saved_devices = pickle.load(pickle_in)
     for d in saved_devices:
         all_devices.append(floorplan_icons.DeviceIcon(canvas,
-                                                      d['image_path'][7:],
+                                                      d['image_path'].split("/")[-1:][0],
                                                       d['xpos'],
                                                       d['ypos']))
 
@@ -91,7 +102,6 @@ else:
         ypos += 100
 
 # canvas.bind("<Enter>", print_true)
-
 
 # DeviceIcon(root).pack(side="top", fill="both", expand="true")
 
