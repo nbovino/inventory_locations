@@ -34,11 +34,14 @@ canvas.pack(pady=20)
 # Open Image
 my_pic = Image.open(IMAGE_PATH + LAYOUTS_PATH + "apartment.png")
 
-# Resize Image
+# Resize Image to the width and height of the canvas
 resized = my_pic.resize((w, h), Image.ANTIALIAS)
 
+# Make the resized pic into a PhotoImage
 new_pic = ImageTk.PhotoImage(resized)
-canvas.create_image(300, 200, image=new_pic)
+
+# Place image in canvas anchored to nw so it fills the whole canvas size
+canvas.create_image(0, 0, anchor="nw", image=new_pic)
 
 
 # def new_icon(e):
