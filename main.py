@@ -2,7 +2,7 @@
 import floorplan_icons
 from setup import *
 import pickle
-import PIL
+from PIL import ImageTk, Image
 import os.path
 from os import path
 
@@ -26,9 +26,19 @@ canvas.pack(pady=20)
 # device_icon_green = canvas.create_image(x, y, image=img)
 
 # img = tk.PhotoImage(file="images\\green_circle.png")
-floorplan_path = IMAGE_PATH + LAYOUTS_PATH + "apartment.png"
-apt_img = tk.PhotoImage(file=floorplan_path, )
-canvas.create_image(1, 1, image=apt_img)
+# floorplan_path = IMAGE_PATH + LAYOUTS_PATH + "apartment.png"
+# apt_img = tk.PhotoImage(file=floorplan_path, )
+# canvas.create_image(1, 1, image=apt_img)
+
+# USING PILLOW TO RESIZE IMAGE
+# Open Image
+my_pic = Image.open(IMAGE_PATH + LAYOUTS_PATH + "apartment.png")
+
+# Resize Image
+resized = my_pic.resize((w, h), Image.ANTIALIAS)
+
+new_pic = ImageTk.PhotoImage(resized)
+canvas.create_image(300, 200, image=new_pic)
 
 
 # def new_icon(e):
