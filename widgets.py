@@ -2,6 +2,7 @@
 # and it will be a green circle that you an move around but only if you click where the circle is
 import tkinter as tk
 from setup import *
+from PIL import ImageTk, Image
 # from setup import IMAGE_PATH
 # from main import canvas
 
@@ -43,50 +44,42 @@ class DeviceIcon(object):
         self.move_flag = False
 
 
-# Testing from 4/20/21
-# class DeviceIcon(tk.Frame):
-#     def __init__(self, new_x, new_y, img, canvas):
-#         self.x = new_x
-#         self.y = new_y
-#         self.img = img
-#         self.canvas = canvas
-#         self.device_icon_green = canvas.create_image(self.x, self.y, image=img)
-#         all_devices.append(self)
-#         for d in all_devices:
-#             print(d.x, d.y)
-#         self.canvas.bind("<B1-Motion>", self.move_image)
-#
-#     def move_image(self, event):
-#         # delete the old image
-#         self.canvas.delete(self.img)
-#         # get the mouse position
-#         x = event.x
-#         y = event.y
-#         # create the new image at position x, y
-#         self.img = self.canvas.create_image(x, y, image=self.img)
-#         self.canvas.update()
+class FloorPlan(object):
+    def __init__(self, canvas, image_name):
+        # USING PILLOW TO RESIZE IMAGE
+        # Open Image
+        my_pic = Image.open(IMAGE_PATH + LAYOUTS_PATH + image_name)
+
+        # Resize Image to the width and height of the canvas
+        resized = my_pic.resize((w, h), Image.ANTIALIAS)
+
+        # Make the resized pic into a PhotoImage
+        new_pic = ImageTk.PhotoImage(resized)
+        # When this is in a function you have to do canvas.image. unsure why.
+        canvas.image = new_pic
+        # Place image in canvas anchored to nw so it fills the whole canvas size
+        canvas.create_image(0, 0, anchor="nw", image=new_pic)
 
 
+class NewDeviceButton(object):
+    def __init__(self, canvas):
+        self.new_device_button = tk.Button(root, text="Add Device", command=self.toggle)
+        self.new_device_button.pack(padx=40)
+        self.clicked = False
+        canvas.bind("<B1-Motion>", self.test)
+        print("CREATED BUTTON")
 
+    def toggle(self):
+        if self.clicked:
+            self.clicked = False
+            print("Turned Off")
+        else:
+            self.clicked = True
+            print("Turned On")
 
-# Old device icon class
-# class DeviceIcon(tk.Frame):
-#     def __init__(self, *args, **kwargs):
-#         self.x = x
-#         self.y = y
-#         self.img = tk.PhotoImage(file="images\\green_circle.png")
-#         self.device_icon_green = canvas.create_image(x, y, image=img)
-#
-#         # tk.Frame.__init__(self, *args, **kwargs)
-#         # self.icon = tk.PhotoImage(file="images\\green_circle.png")
-#         # device_icon_green = canvas.create_image(x, y, image=img)
-#         # self.icon.bind("<Enter>", self.on_enter)
-#         # self.icon.bind("<Leave>", self.on_leave)
-#
-#     def on_enter(self, event):
-#         # self.icon.configure(text="Hello world")
-#         pass
-#
-#     def on_leave(self, enter):
-#         # self.icon.configure(text="")
-#         pass
+    def test(self, event):
+        if self.clicked:
+            all_devices.append(DeviceIcon(canvas,
+                                          "green_circle.png",
+                                          event.x,
+                                          event.y))
