@@ -6,8 +6,6 @@ from PIL import ImageTk, Image
 import os.path
 from os import path
 
-canvas.pack(pady=20)
-
 
 def save_devices():
     # Can't pickle tKinter objects. Need to convert xpos, ypos, and image to dict
@@ -32,6 +30,7 @@ def add_device():
 save_button = tk.Button(root, text="Save", command=save_devices)
 save_button.pack(pady=20)
 new_device_button = widgets.NewDeviceButton(canvas)
+# message = widgets.MessageLabel(message="Testing")
 # B1-Motion is when button one is pressed on mouse
 # canvas.bind("<B1-Motion>", move)
 # canvas.bind("<Button 1>", new_icon)

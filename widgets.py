@@ -7,6 +7,10 @@ from PIL import ImageTk, Image
 # from main import canvas
 
 
+# class BaseCanvas(object):
+#     def __init__
+
+
 class DeviceIcon(object):
     def __init__(self, canvas, image_name, xpos, ypos):
         self.canvas = canvas
@@ -21,6 +25,7 @@ class DeviceIcon(object):
 
         canvas.tag_bind(self.image_obj, '<Button1-Motion>', self.move)
         canvas.tag_bind(self.image_obj, '<ButtonRelease-1>', self.release)
+        canvas.tag_bind(self.image_obj, '<Button-1>', self.clicked)
         self.move_flag = False
 
     def move(self, event):
@@ -42,6 +47,9 @@ class DeviceIcon(object):
         print(event.x, event.y)
         self.xpos, self.ypos = event.x, event.y
         self.move_flag = False
+
+    def clicked(self, event):
+        print("DEVICE CLICKED!!!!!!")
 
 
 class FloorPlan(object):
@@ -83,3 +91,11 @@ class NewDeviceButton(object):
                                           "green_circle.png",
                                           event.x,
                                           event.y))
+
+
+class MessageLabel(object):
+    def __init__(self, message):
+        self.message = message
+        self.message_label = tk.Label(root, text=self.message)
+        self.message_label.pack(pady=60)
+        print("GOT HERE")

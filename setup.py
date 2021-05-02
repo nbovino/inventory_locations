@@ -16,3 +16,4 @@ x = w//2
 y = h//2
 
 canvas = tk.Canvas(root, width=w, height=h, bg="white")
+canvas.pack(pady=20)
