@@ -1,5 +1,5 @@
 # import tkinter as tk
-import widgets
+import classes
 from setup import *
 import pickle
 from PIL import ImageTk, Image
@@ -29,20 +29,21 @@ def add_device():
 
 save_button = tk.Button(program_canvas.root, text="Save", command=save_devices)
 save_button.pack(pady=20)
-new_device_button = widgets.NewDeviceButton(program_canvas.canvas)
+new_device_button = classes.NewDeviceButton(program_canvas.canvas)
+classes.DeleteDeviceButton(program_canvas.canvas)
 
 
 if path.exists("saved_locations/devices.pk1"):
-    widgets.FloorPlan(program_canvas.canvas, "apartment.png")
+    classes.FloorPlan(program_canvas.canvas, "apartment.png")
 else:
-    widgets.FloorPlan(program_canvas.canvas, "apartment.png")
+    classes.FloorPlan(program_canvas.canvas, "apartment.png")
 
 
 if path.exists("saved_locations/devices.pk1"):
     pickle_in = open("saved_locations/devices.pk1", "rb")
     saved_devices = pickle.load(pickle_in)
     for d in saved_devices:
-        all_devices.append(widgets.DeviceIcon(program_canvas.canvas,
+        all_devices.append(classes.DeviceIcon(program_canvas.canvas,
                                               d['image_path'].split("/")[-1:][0],
                                               d['xpos'],
                                               d['ypos']))
@@ -52,5 +53,6 @@ else:
     # while ypos < 400:
     #     all_devices.append(widgets.DeviceIcon(program_canvas.canvas, "green_circle.png", 100, ypos))
     #     ypos += 100
+
 
 program_canvas.root.mainloop()

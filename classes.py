@@ -46,6 +46,8 @@ class DeviceIcon(object):
 
     def clicked(self, event):
         program_canvas.alert_message.config(text="Device Selected - X: " + str(self.xpos) + " Y: " + str(self.ypos))
+        program_canvas.selected_device = self
+        print(program_canvas.selected_device)
 
 
 class FloorPlan(object):
@@ -96,3 +98,17 @@ class MessageLabel(object):
         self.message_label = tk.Label(program_canvas.root, text=self.message)
         self.message_label.pack(pady=60)
         print("GOT HERE")
+
+
+class DeleteDeviceButton(object):
+    def __init__(self, canvas):
+        self.delete_device_button = tk.Button(program_canvas.root, text="Delete Device", command=self.delete_device)
+        self.delete_device_button.pack(padx=60)
+
+        print("CREATED BUTTON")
+
+    def delete_device(self):
+        if program_canvas.selected_device:
+            print("Will delete device " + str(program_canvas.selected_device))
+        else:
+            print("No device selected")

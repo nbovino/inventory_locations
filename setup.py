@@ -1,5 +1,5 @@
 import tkinter as tk
-import widgets
+import classes
 
 # root = tk.Tk()
 # root.title('Inventory Locations')
@@ -27,8 +27,10 @@ class BaseWindow(object):
         self.root.geometry("800x600")
         self.canvas = tk.Canvas(self.root, width=w, height=h, bg="white")
         self.canvas.pack(pady=20)
+        # self.canvas.grid(column=1)
         self.alert_message = tk.Label(self.root, text="HELLO")
-        self.alert_message.pack()
+        self.alert_message.pack(pady=30, side=tk.RIGHT)
+        self.selected_device = None
 
 
 program_canvas = BaseWindow()
