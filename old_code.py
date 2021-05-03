@@ -7,6 +7,21 @@
 # x2, y2: bottom right
 # canvas.create_rectangle(x1, y1, x2, y2, fill="color")
 
+# root = tk.Tk()
+# root.title('Inventory Locations')
+# # root.iconbitmap("\\images\\greeen_circle.png")
+# root.geometry("800x600")
+#
+
+# w = 600
+# h = 400
+# # Starting coordinates of the circle
+# x = w//2
+# y = h//2
+#
+# canvas = tk.Canvas(root, width=w, height=h, bg="white")
+# canvas.pack(pady=20)
+
 # Create Oval
 # Same as rectangle, top left coordinate and bottom right coordinate
 # canvas.create_oval(50, 150, 250, 50, fill="cyan")

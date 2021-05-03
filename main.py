@@ -27,31 +27,30 @@ def add_device():
     print("New device code to add")
 
 
-save_button = tk.Button(root, text="Save", command=save_devices)
+save_button = tk.Button(program_canvas.root, text="Save", command=save_devices)
 save_button.pack(pady=20)
-new_device_button = widgets.NewDeviceButton(canvas)
-# message = widgets.MessageLabel(message="Testing")
-# B1-Motion is when button one is pressed on mouse
-# canvas.bind("<B1-Motion>", move)
-# canvas.bind("<Button 1>", new_icon)
+new_device_button = widgets.NewDeviceButton(program_canvas.canvas)
 
 
 if path.exists("saved_locations/devices.pk1"):
-    widgets.FloorPlan(canvas, "apartment.png")
+    widgets.FloorPlan(program_canvas.canvas, "apartment.png")
+else:
+    widgets.FloorPlan(program_canvas.canvas, "apartment.png")
 
 
 if path.exists("saved_locations/devices.pk1"):
     pickle_in = open("saved_locations/devices.pk1", "rb")
     saved_devices = pickle.load(pickle_in)
     for d in saved_devices:
-        all_devices.append(widgets.DeviceIcon(canvas,
+        all_devices.append(widgets.DeviceIcon(program_canvas.canvas,
                                               d['image_path'].split("/")[-1:][0],
                                               d['xpos'],
                                               d['ypos']))
 else:
-    ypos = 150
-    while ypos < 400:
-        all_devices.append(widgets.DeviceIcon(canvas, "green_circle.png", 100, ypos))
-        ypos += 100
+    program_canvas.alert_message.config(text="No devices on this floorplan")
+    # ypos = 150
+    # while ypos < 400:
+    #     all_devices.append(widgets.DeviceIcon(program_canvas.canvas, "green_circle.png", 100, ypos))
+    #     ypos += 100
 
-root.mainloop()
+program_canvas.root.mainloop()

@@ -7,10 +7,6 @@ from PIL import ImageTk, Image
 # from main import canvas
 
 
-# class BaseCanvas(object):
-#     def __init__
-
-
 class DeviceIcon(object):
     def __init__(self, canvas, image_name, xpos, ypos):
         self.canvas = canvas
@@ -49,7 +45,7 @@ class DeviceIcon(object):
         self.move_flag = False
 
     def clicked(self, event):
-        print("DEVICE CLICKED!!!!!!")
+        program_canvas.alert_message.config(text="Device Selected - X: " + str(self.xpos) + " Y: " + str(self.ypos))
 
 
 class FloorPlan(object):
@@ -71,10 +67,10 @@ class FloorPlan(object):
 
 class NewDeviceButton(object):
     def __init__(self, canvas):
-        self.new_device_button = tk.Button(root, text="Add Device", command=self.toggle)
+        self.new_device_button = tk.Button(program_canvas.root, text="Add Device", command=self.toggle)
         self.new_device_button.pack(padx=40)
         self.clicked = False
-        canvas.bind("<B1-Motion>", self.test)
+        canvas.bind("<Button-1>", self.test)
         print("CREATED BUTTON")
 
     def toggle(self):
@@ -87,15 +83,16 @@ class NewDeviceButton(object):
 
     def test(self, event):
         if self.clicked:
-            all_devices.append(DeviceIcon(canvas,
+            all_devices.append(DeviceIcon(program_canvas.canvas,
                                           "green_circle.png",
                                           event.x,
                                           event.y))
+            self.toggle()
 
 
 class MessageLabel(object):
     def __init__(self, message):
         self.message = message
-        self.message_label = tk.Label(root, text=self.message)
+        self.message_label = tk.Label(program_canvas.root, text=self.message)
         self.message_label.pack(pady=60)
         print("GOT HERE")
