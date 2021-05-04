@@ -1,14 +1,16 @@
 # I need to make an object here that will be able to be drawn on the canvas make a computer class
 # and it will be a green circle that you an move around but only if you click where the circle is
 import tkinter as tk
-from setup import *
+from global_variables import *
+# from setup import *
 from PIL import ImageTk, Image
 # from setup import IMAGE_PATH
 # from main import canvas
 
 
 class DeviceIcon(object):
-    def __init__(self, canvas, image_name, xpos, ypos):
+    def __init__(self, canvas, image_name, xpos, ypos, root):
+        self.root = root
         self.canvas = canvas
         self.image_name = image_name
         self.xpos, self.ypos = xpos, ypos
@@ -19,9 +21,9 @@ class DeviceIcon(object):
             xpos, ypos, image=self.tk_image)
         self.image_path = IMAGE_PATH + DEVICE_ICONS_PATH + image_name
 
-        canvas.tag_bind(self.image_obj, '<Button1-Motion>', self.move)
-        canvas.tag_bind(self.image_obj, '<ButtonRelease-1>', self.release)
-        canvas.tag_bind(self.image_obj, '<Button-1>', self.clicked)
+        self.canvas.tag_bind(self.image_obj, '<Button1-Motion>', self.move)
+        self.canvas.tag_bind(self.image_obj, '<ButtonRelease-1>', self.release)
+        self.canvas.tag_bind(self.image_obj, '<Button-1>', self.clicked)
         self.move_flag = False
 
     def move(self, event):
@@ -45,9 +47,9 @@ class DeviceIcon(object):
         self.move_flag = False
 
     def clicked(self, event):
-        program_canvas.alert_message.config(text="Device Selected - X: " + str(self.xpos) + " Y: " + str(self.ypos))
-        program_canvas.selected_device = self
-        print(program_canvas.selected_device)
+        self.root.selected_device = self
+        print(self.root.selected_device)
+        print("Device Selected - X: " + str(self.xpos) + " Y: " + str(self.ypos))
 
 
 class FloorPlan(object):
@@ -68,8 +70,11 @@ class FloorPlan(object):
 
 
 class NewDeviceButton(object):
-    def __init__(self, canvas):
-        self.new_device_button = tk.Button(program_canvas.root, text="Add Device", command=self.toggle)
+    def __init__(self, canvas, root, all_devices):
+        self.canvas = canvas
+        self.root = root
+        self.all_devices = all_devices
+        self.new_device_button = tk.Button(root, text="Add Device", command=self.toggle)
         self.new_device_button.pack(padx=40)
         self.clicked = False
         canvas.bind("<Button-1>", self.test)
@@ -85,30 +90,32 @@ class NewDeviceButton(object):
 
     def test(self, event):
         if self.clicked:
-            all_devices.append(DeviceIcon(program_canvas.canvas,
-                                          "green_circle.png",
-                                          event.x,
-                                          event.y))
+            self.all_devices.append(DeviceIcon(self.canvas,
+                                               "green_circle.png",
+                                               event.x,
+                                               event.y,
+                                               self.root))
             self.toggle()
 
 
 class MessageLabel(object):
     def __init__(self, message):
         self.message = message
-        self.message_label = tk.Label(program_canvas.root, text=self.message)
+        self.message_label = tk.Label(self.root, text=self.message)
         self.message_label.pack(pady=60)
         print("GOT HERE")
 
 
-class DeleteDeviceButton(object):
-    def __init__(self, canvas):
-        self.delete_device_button = tk.Button(program_canvas.root, text="Delete Device", command=self.delete_device)
-        self.delete_device_button.pack(padx=60)
-
-        print("CREATED BUTTON")
-
-    def delete_device(self):
-        if program_canvas.selected_device:
-            print("Will delete device " + str(program_canvas.selected_device))
-        else:
-            print("No device selected")
+# TODO: make a delete device button
+# class DeleteDeviceButton(object):
+#     def __init__(self, canvas):
+#         self.delete_device_button = tk.Button(self.root, text="Delete Device", command=self.delete_device)
+#         self.delete_device_button.pack(padx=60)
+#
+#         print("CREATED BUTTON")
+#
+#     def delete_device(self):
+#         if program_canvas.selected_device:
+#             print("Will delete device " + str(program_canvas.selected_device))
+#         else:
+#             print("No device selected")
