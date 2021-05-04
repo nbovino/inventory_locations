@@ -27,11 +27,39 @@
 # canvas.create_oval(50, 150, 250, 50, fill="cyan")
 # canvas.create_oval(50, 150, 250, 50, fill="cyan")
 
-def move(e):
+
+# save_button = tk.Button(program_canvas.root, text="Save", command=save_devices)
+# save_button.pack(pady=20)
+# new_device_button = classes.NewDeviceButton(program_canvas.canvas)
+# classes.DeleteDeviceButton(program_canvas.canvas)
+
+
+# if path.exists("saved_locations/devices.pk1"):
+#     classes.FloorPlan(program_canvas.canvas, "apartment.png")
+# else:
+#     classes.FloorPlan(program_canvas.canvas, "apartment.png")
+#
+#
+# if path.exists("saved_locations/devices.pk1"):
+#     pickle_in = open("saved_locations/devices.pk1", "rb")
+#     saved_devices = pickle.load(pickle_in)
+#     for d in saved_devices:
+#         all_devices.append(classes.DeviceIcon(program_canvas.canvas,
+#                                               d['image_path'].split("/")[-1:][0],
+#                                               d['xpos'],
+#                                               d['ypos']))
+# else:
+#     program_canvas.alert_message.config(text="No devices on this floorplan")
+    # ypos = 150
+    # while ypos < 400:
+    #     all_devices.append(widgets.DeviceIcon(program_canvas.canvas, "green_circle.png", 100, ypos))
+    #     ypos += 100
+
+# def move(e):
     # global img
     # img = tk.PhotoImage(file="images\\green_circle.png")
-    print(e.x)
-    print(e.y)
+    # print(e.x)
+    # print(e.y)
     # if x-20 >= e.x <= x+20 and y-20 >= e.y <= y+20:
     # device_icon_green = canvas.create_image(e.x, e.y, image=img)
         # device_icon = canvas.create_oval(e.x-5, e.y-5, e.x+5, e.y+5, fill="green")
