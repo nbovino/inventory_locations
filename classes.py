@@ -9,10 +9,11 @@ from PIL import ImageTk, Image
 
 
 class DeviceIcon(object):
-    def __init__(self, canvas, image_name, xpos, ypos, root):
+    def __init__(self, canvas, image_name, xpos, ypos, root, device_name):
         self.root = root
         self.canvas = canvas
         self.image_name = image_name
+        self.device_name = device_name
         self.xpos, self.ypos = xpos, ypos
 
         self.tk_image = tk.PhotoImage(
@@ -50,6 +51,7 @@ class DeviceIcon(object):
         self.root.selected_device = self
         print(self.root.selected_device)
         print("Device Selected - X: " + str(self.xpos) + " Y: " + str(self.ypos))
+        print(self.device_name)
 
 
 class FloorPlan(object):
@@ -75,7 +77,8 @@ class NewDeviceButton(object):
         self.root = root
         self.all_devices = all_devices
         self.new_device_button = tk.Button(root, text="Add Device", command=self.toggle)
-        self.new_device_button.pack(padx=40)
+        # self.new_device_button.pack(padx=40)
+        self.new_device_button.grid(row=2, rowspan=1, column=10, columnspan=1)
         self.clicked = False
         canvas.bind("<Button-1>", self.test)
         print("CREATED BUTTON")
@@ -90,19 +93,45 @@ class NewDeviceButton(object):
 
     def test(self, event):
         if self.clicked:
-            self.all_devices.append(DeviceIcon(self.canvas,
-                                               "green_circle.png",
-                                               event.x,
-                                               event.y,
-                                               self.root))
+            self.device_name_window = tk.Toplevel(width=100, height=100)
+            self.device_name_window.geometry("%dx%d%+d%+d" % (200, 100, 250, 125))
+            self.device_name_window.title("Enter name of device")
+            self.device_name_entry = tk.Entry(master=self.device_name_window)
+            # device_name.grid(row=0, column=0, columnspan=2)
+            self.device_name_entry.pack(pady=10)
+            add_name_button = tk.Button(master=self.device_name_window, text="Add Device", command= lambda: self.get_value(event))
+            # add_name_button.grid(row=1, column=0, columnspan=1)
+            add_name_button.pack()
+            cancel_button = tk.Button(master=self.device_name_window, text="Cancel", command=self.device_name_window.destroy)
+            # cancel_button.grid(row=1, column=1, columnspan=1)
+            cancel_button.pack()
+            # self.all_devices.append(DeviceIcon(self.canvas,
+            #                                    "green_circle.png",
+            #                                    event.x,
+            #                                    event.y,
+            #                                    self.root,
+            #                                    device_name))
             self.toggle()
+
+    def get_value(self, event):
+        device_name = self.device_name_entry.get()
+        print(str(event.x) + " | " + str(event.y))
+        self.device_name_window.destroy()
+        print(device_name)
+        self.all_devices.append(DeviceIcon(self.canvas,
+                                           "green_circle.png",
+                                           event.x,
+                                           event.y,
+                                           self.root,
+                                           device_name))
 
 
 class MessageLabel(object):
     def __init__(self, message):
         self.message = message
         self.message_label = tk.Label(self.root, text=self.message)
-        self.message_label.pack(pady=60)
+        # self.message_label.pack(pady=60)
+        self.message_label.grid(row=7, rowspan=1, column=1, columnspan=1)
         print("GOT HERE")
 
 
