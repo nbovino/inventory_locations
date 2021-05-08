@@ -1,40 +1,10 @@
-import tkinter as tk
-import classes
-from global_variables import *
-# from setup import *
-import pickle
+from setup_testing import *
 from PIL import ImageTk, Image
-import os.path
-from os import path
-
-all_devices = []
-#
-IMAGE_PATH = "images/"
-LAYOUTS_PATH = "layouts/"
-DEVICE_ICONS_PATH = "device_icons/"
-#
-w = 600
-h = 400
-# # Starting coordinates of the circle
-x = w // 2
-y = h // 2
-
-root = tk.Tk()
-root.title('Inventory Locations')
-# root.iconbitmap("\\images\\greeen_circle.png")
-root.geometry("800x600")
-canvas = tk.Canvas(root, width=w, height=h, bg="white")
-# self.canvas.pack(pady=20)
-canvas.grid(row=1, rowspan=5, column=1, columnspan=8)
-# self.alert_message = tk.Label(self.root, text="HELLO")
-# Pack
-# self.alert_message.pack(pady=30, side=tk.RIGHT)
-# self.alert_message.grid(row=10, rowspan=1, column=1, columnspan=1)
 
 
 class DeviceIcon(object):
-    global root
-    def __init__(self, canvas, image_name, xpos, ypos, root, device_name):
+
+    def __init__(self, canvas, image_name, xpos, ypos, device_name):
         # self.root = root
         self.canvas = canvas
         self.image_name = image_name
@@ -80,6 +50,7 @@ class DeviceIcon(object):
 
 
 class FloorPlan(object):
+
     def __init__(self, canvas, image_name):
         # USING PILLOW TO RESIZE IMAGE
         # Open Image
@@ -87,11 +58,12 @@ class FloorPlan(object):
 
         # Resize Image to the width and height of the canvas
         resized = my_pic.resize((w, h), Image.ANTIALIAS)
-
+        print(resized)
         # Make the resized pic into a PhotoImage
-        new_pic = ImageTk.PhotoImage(resized)
+        new_pic = ImageTk.PhotoImage(resized, master=canvas)
         # When this is in a function you have to do canvas.image. unsure why.
         canvas.image = new_pic
+
         # Place image in canvas anchored to nw so it fills the whole canvas size
         canvas.create_image(0, 0, anchor="nw", image=new_pic)
 
@@ -124,10 +96,12 @@ class NewDeviceButton(object):
             self.device_name_entry = tk.Entry(master=self.device_name_window)
             # device_name.grid(row=0, column=0, columnspan=2)
             self.device_name_entry.pack(pady=10)
-            add_name_button = tk.Button(master=self.device_name_window, text="Add Device", command=lambda: self.get_value(event))
+            add_name_button = tk.Button(master=self.device_name_window, text="Add Device",
+                                        command=lambda: self.get_value(event))
             # add_name_button.grid(row=1, column=0, columnspan=1)
             add_name_button.pack()
-            cancel_button = tk.Button(master=self.device_name_window, text="Cancel", command=self.device_name_window.destroy)
+            cancel_button = tk.Button(master=self.device_name_window, text="Cancel",
+                                      command=self.device_name_window.destroy)
             # cancel_button.grid(row=1, column=1, columnspan=1)
             cancel_button.pack()
             # self.all_devices.append(DeviceIcon(self.canvas,
@@ -147,7 +121,7 @@ class NewDeviceButton(object):
                                            "green_circle.png",
                                            event.x,
                                            event.y,
-                                           self.root,
+                                           # self.root,
                                            device_name))
 
 
@@ -158,56 +132,3 @@ class MessageLabel(object):
         # self.message_label.pack(pady=60)
         self.message_label.grid(row=7, rowspan=1, column=1, columnspan=1)
         print("GOT HERE")
-
-
-def save_devices():
-    # Can't pickle tKinter objects. Need to convert xpos, ypos, and image to dict
-    devices_to_pickle = []
-    for d in all_devices:
-        this_device = {'image_path': d.__dict__['image_path'],
-                       'xpos': d.__dict__['xpos'],
-                       'ypos': d.__dict__['ypos'],
-                       'device_name': d.__dict__['device_name']}
-        # devices_to_pickle.append(d.__dict__)
-        devices_to_pickle.append(this_device)
-    print(devices_to_pickle)
-    pickle_out = open("saved_locations\devices.pk1", "wb")
-    pickle.dump(devices_to_pickle, pickle_out)
-    pickle_out.close()
-    print("SAVED DEVICES!!!!")
-
-
-def add_device():
-    print("New device code to add")
-
-
-selected_device = None
-save_button = tk.Button(root, text="Save", command=save_devices)
-# self.save_button.pack(pady=20)
-save_button.grid(row=3, rowspan=1, column=10, columnspan=1)
-new_device_button = classes.NewDeviceButton(canvas, root, all_devices)
-# classes.DeleteDeviceButton(program_canvas.canvas)
-
-# Load floorplan
-if path.exists("saved_locations/devices.pk1"):
-    classes.FloorPlan(canvas, "apartment.png")
-else:
-    classes.FloorPlan(canvas, "apartment.png")
-
-# Load devices
-if path.exists("saved_locations/devices.pk1"):
-    pickle_in = open("saved_locations/devices.pk1", "rb")
-    saved_devices = pickle.load(pickle_in)
-    for d in saved_devices:
-        all_devices.append(classes.DeviceIcon(canvas,
-                                              d['image_path'].split("/")[-1:][0],
-                                              d['xpos'],
-                                              d['ypos'],
-                                              root,
-                                              d['device_name']))
-else:
-    print("No Devices on the floorplan")
-    # self.alert_message.config(text="No devices on this floorplan")
-
-
-root.mainloop()

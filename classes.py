@@ -10,6 +10,7 @@ from PIL import ImageTk, Image
 
 class DeviceIcon(object):
     def __init__(self, canvas, image_name, xpos, ypos, root, device_name):
+        # This is the same variable in memory as root. So it shouldn't be creating a bunch of new variables
         self.root = root
         self.canvas = canvas
         self.image_name = image_name
