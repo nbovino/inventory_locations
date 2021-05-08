@@ -4,6 +4,7 @@ import tkinter as tk
 from global_variables import *
 # from setup import *
 from PIL import ImageTk, Image
+import os
 # from setup import IMAGE_PATH
 # from main import canvas
 
@@ -82,7 +83,7 @@ class NewDeviceButton(object):
         self.new_device_button.grid(row=2, rowspan=1, column=10, columnspan=1)
         self.clicked = False
         canvas.bind("<Button-1>", self.test)
-        print("CREATED BUTTON")
+        # print("CREATED BUTTON")
 
     def toggle(self):
         if self.clicked:
@@ -125,6 +126,17 @@ class NewDeviceButton(object):
                                            event.y,
                                            self.root,
                                            device_name))
+
+
+class FloorPlanList(object):
+    def __init__(self, root):
+        self.root = root
+        self.floor_plan_listbox = tk.Listbox(self.root)
+        self.floor_plan_listbox.grid(row=6, rowspan=4, column=0, columnspan=3)
+
+    def add_all_floor_plans(self, floor_plan_list):
+        for p in floor_plan_list:
+            self.floor_plan_listbox.insert(tk.END, p)
 
 
 class MessageLabel(object):

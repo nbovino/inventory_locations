@@ -4,8 +4,7 @@ from global_variables import *
 # from setup import *
 import pickle
 from PIL import ImageTk, Image
-import os.path
-from os import path
+import os
 
 # all_devices = []
 #
@@ -39,15 +38,29 @@ class BaseWindow(object):
         self.save_button.grid(row=3, rowspan=1, column=10, columnspan=1)
         new_device_button = classes.NewDeviceButton(self.canvas, self.root, all_devices)
         # classes.DeleteDeviceButton(program_canvas.canvas)
+        self.floor_plan_list = classes.FloorPlanList(self.root)
+        # self.load_fp_button = tk.Button(self.root, text="Load Floor Plan", command=lambda: load_plan(self.floor_plan_list))
+        # The lambda that this causes to happen sends the selected item in the listbox
+        self.load_fp_button = tk.Button(self.root, text="Load Floor Plan",
+                                        command=lambda: load_plan(self.floor_plan_list.floor_plan_listbox.get(self.floor_plan_list.floor_plan_listbox.curselection()[0])))
+        self.load_fp_button.grid(row=6, rowspan=1, column=3, columnspan=1)
 
         # Load floorplan
-        if path.exists("saved_locations/devices.pk1"):
+        if os.path.exists("saved_locations/devices.pk1"):
             classes.FloorPlan(self.canvas, "apartment.png")
         else:
             classes.FloorPlan(self.canvas, "apartment.png")
 
+        # Get all floorplan images in layouts folder
+        floor_plan_names = []
+        for root, dir, file in os.walk(IMAGE_PATH + LAYOUTS_PATH):
+            for f in file:
+                floor_plan_names.append(f.split(".")[0])
+                # floor_plan_list.insert(END, f.split(".")[0])
+        # Populates list of floorplans
+        self.floor_plan_list.add_all_floor_plans(sorted(floor_plan_names))
         # Load devices
-        if path.exists("saved_locations/devices.pk1"):
+        if os.path.exists("saved_locations/devices.pk1"):
             pickle_in = open("saved_locations/devices.pk1", "rb")
             saved_devices = pickle.load(pickle_in)
             for d in saved_devices:
@@ -77,6 +90,14 @@ def save_devices():
     pickle.dump(devices_to_pickle, pickle_out)
     pickle_out.close()
     print("SAVED DEVICES!!!!")
+
+
+def load_plan(fp_list):
+    print(fp_list)
+    # print(fp_list.floor_plan_listbox.get(fp_list.floor_plan_listbox.curselection()[0]))
+    # for i in fp_list.floor_plan_listbox.curselection():
+    #     print(i)
+    #     print(fp_list.floor_plan_listbox.get(i))
 
 
 def add_device():
