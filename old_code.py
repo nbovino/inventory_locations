@@ -44,7 +44,7 @@
 #     pickle_in = open("saved_locations/devices.pk1", "rb")
 #     saved_devices = pickle.load(pickle_in)
 #     for d in saved_devices:
-#         all_devices.append(classes.DeviceIcon(program_canvas.canvas,
+#         floor_plan_devices.append(classes.DeviceIcon(program_canvas.canvas,
 #                                               d['image_path'].split("/")[-1:][0],
 #                                               d['xpos'],
 #                                               d['ypos']))
@@ -52,7 +52,7 @@
 #     program_canvas.alert_message.config(text="No devices on this floorplan")
     # ypos = 150
     # while ypos < 400:
-    #     all_devices.append(widgets.DeviceIcon(program_canvas.canvas, "green_circle.png", 100, ypos))
+    #     floor_plan_devices.append(widgets.DeviceIcon(program_canvas.canvas, "green_circle.png", 100, ypos))
     #     ypos += 100
 
 # def move(e):
@@ -96,8 +96,8 @@
 #         self.img = img
 #         self.canvas = canvas
 #         self.device_icon_green = canvas.create_image(self.x, self.y, image=img)
-#         all_devices.append(self)
-#         for d in all_devices:
+#         floor_plan_devices.append(self)
+#         for d in floor_plan_devices:
 #             print(d.x, d.y)
 #         self.canvas.bind("<B1-Motion>", self.move_image)
 #

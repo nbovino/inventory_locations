@@ -7,18 +7,6 @@ import pickle
 from PIL import ImageTk, Image
 import os
 
-# all_devices = []
-#
-# IMAGE_PATH = "images/"
-# LAYOUTS_PATH = "layouts/"
-# DEVICE_ICONS_PATH = "device_icons/"
-#
-# w = 600
-# h = 400
-# # Starting coordinates of the circle
-# x = w // 2
-# y = h // 2
-
 
 class BaseWindow(object):
     def __init__(self):
@@ -38,7 +26,7 @@ class BaseWindow(object):
         self.save_button = tk.Button(self.root, text="Save", command=save_devices)
         # self.save_button.pack(pady=20)
         self.save_button.grid(row=3, rowspan=1, column=10, columnspan=1)
-        new_device_button = classes.NewDeviceButton(self.canvas, self.root, all_devices)
+        new_device_button = classes.NewDeviceButton(self.canvas, self.root, floor_plan_devices)
         # classes.DeleteDeviceButton(program_canvas.canvas)
         self.floor_plan_list = classes.FloorPlanList(self.root)
         # self.load_fp_button = tk.Button(self.root, text="Load Floor Plan", command=lambda: load_plan(self.floor_plan_list))
@@ -51,39 +39,17 @@ class BaseWindow(object):
 
         # Load floorplan
         load_plan(fp_list=None, root=self.root, canvas=self.canvas)
-
-        # Get all floorplan images in layouts folder
-        floor_plan_names = []
-        for root, dir, file in os.walk(IMAGE_PATH + LAYOUTS_PATH):
-            for f in file:
-                floor_plan_names.append(f.split(".")[0])
-                # floor_plan_list.insert(END, f.split(".")[0])
-        # Populates list of floorplans
-        self.floor_plan_list.add_all_floor_plans(sorted(floor_plan_names))
-        # Load devices
-        # if os.path.exists("saved_locations/devices.pk1"):
-        #     pickle_in = open("saved_locations/devices.pk1", "rb")
-        #     saved_devices = pickle.load(pickle_in)
-        #     for d in saved_devices:
-        #         all_devices.append(classes.DeviceIcon(self.canvas,
-        #                                               d['image_path'].split("/")[-1:][0],
-        #                                               d['xpos'],
-        #                                               d['ypos'],
-        #                                               self.root,
-        #                                               d['device_name']))
-        # else:
-        #     print("No Devices on the floorplan")
-            # self.alert_message.config(text="No devices on this floorplan")
+        self.floor_plan_list.add_all_floor_plans(sorted(floor_plans))
 
 
 def save_devices():
     # Can't pickle tKinter objects. Need to convert xpos, ypos, and image to dict
     devices_to_pickle = []
-    for d in all_devices:
-        this_device = {'image_path': d.__dict__['image_path'],
+    for d in floor_plan_devices:
+        this_device = {'device_name': d.__dict__['device_name'],
+                       'image_path': d.__dict__['image_path'],
                        'xpos': d.__dict__['xpos'],
                        'ypos': d.__dict__['ypos'],
-                       'device_name': d.__dict__['device_name'],
                        'floor_plan': program_setup.current_floor_plan}
         # devices_to_pickle.append(d.__dict__)
         devices_to_pickle.append(this_device)
@@ -93,9 +59,20 @@ def save_devices():
     pickle_out.close()
     print("SAVED DEVICES!!!!")
 
+    # TODO: This will save it to a json file instead of pickling
+    json_save_data = {program_setup.current_floor_plan: devices_to_pickle}
+    with open('saved_locations/floor_plan_data.json') as f:
+        loaded_devices = json.load(f)
+    loaded_devices[program_setup.current_floor_plan] = devices_to_pickle
+    with open('saved_locations/floor_plan_data.json', 'w') as outfile:
+        json.dump(loaded_devices, outfile)
+
 
 def load_plan(fp_list, root, canvas):
     print(fp_list)
+    with open('saved_locations/floor_plan_data.json') as f:
+        loaded_devices = json.load(f)
+    print(loaded_devices)
 
     if fp_list:
         if os.path.exists("saved_locations/devices.pk1"):
@@ -109,25 +86,22 @@ def load_plan(fp_list, root, canvas):
             pickle_in = open("saved_locations/devices.pk1", "rb")
             saved_devices = pickle.load(pickle_in)
             # Will have to destroy all devices currently showing before adding these.
-            # for d in all_devices:
+            # for d in floor_plan_devices:
             #     d.destroy()
             #     print("destroyed")
-            all_devices.clear()
-            for d in saved_devices:
-                if d['floor_plan'] == program_setup.current_floor_plan:
-                    all_devices.append(classes.DeviceIcon(canvas,
-                                                          d['image_path'].split("/")[-1:][0],
-                                                          d['xpos'],
-                                                          d['ypos'],
-                                                          root,
-                                                          d['device_name']))
+            floor_plan_devices.clear()
+            # for d in saved_devices:
+            if program_setup.current_floor_plan in loaded_devices:
+                # if d['floor_plan'] == program_setup.current_floor_plan:
+                for d in loaded_devices[program_setup.current_floor_plan]:
+                    floor_plan_devices.append(classes.DeviceIcon(canvas,
+                                                                 d['image_path'].split("/")[-1:][0],
+                                                                 d['xpos'],
+                                                                 d['ypos'],
+                                                                 root,
+                                                                 d['device_name']))
         else:
             print("No Devices on the floorplan")
-            # self.alert_message.config(text="No devices on this floorplan")
-    # print(fp_list.floor_plan_listbox.get(fp_list.floor_plan_listbox.curselection()[0]))
-    # for i in fp_list.floor_plan_listbox.curselection():
-    #     print(i)
-    #     print(fp_list.floor_plan_listbox.get(i))
 
 
 def add_device():

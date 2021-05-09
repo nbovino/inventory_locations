@@ -36,7 +36,7 @@ canvas.grid(row=1, rowspan=5, column=1, columnspan=8)
 def save_devices():
     # Can't pickle tKinter objects. Need to convert xpos, ypos, and image to dict
     devices_to_pickle = []
-    for d in all_devices:
+    for d in floor_plan_devices:
         this_device = {'image_path': d.__dict__['image_path'],
                        'xpos': d.__dict__['xpos'],
                        'ypos': d.__dict__['ypos'],

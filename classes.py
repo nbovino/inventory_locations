@@ -110,7 +110,7 @@ class NewDeviceButton(object):
             cancel_button = tk.Button(master=self.device_name_window, text="Cancel", command=self.device_name_window.destroy)
             # cancel_button.grid(row=1, column=1, columnspan=1)
             cancel_button.pack()
-            # self.all_devices.append(DeviceIcon(self.canvas,
+            # self.floor_plan_devices.append(DeviceIcon(self.canvas,
             #                                    "green_circle.png",
             #                                    event.x,
             #                                    event.y,
