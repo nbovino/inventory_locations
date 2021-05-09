@@ -1,4 +1,5 @@
 all_devices = []
+devices_for_floor_plan = []
 
 IMAGE_PATH = "images/"
 LAYOUTS_PATH = "layouts/"

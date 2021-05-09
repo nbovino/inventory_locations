@@ -1,6 +1,7 @@
 import tkinter as tk
 import classes
 from global_variables import *
+import json
 # from setup import *
 import pickle
 from PIL import ImageTk, Image
@@ -95,18 +96,23 @@ def save_devices():
 
 def load_plan(fp_list, root, canvas):
     print(fp_list)
+
     if fp_list:
         if os.path.exists("saved_locations/devices.pk1"):
-            classes.FloorPlan(canvas, "apartment.png")
+            classes.FloorPlan(canvas, fp_list + ".png")
             program_setup.current_floor_plan = fp_list
         else:
-            classes.FloorPlan(canvas, "apartment.png")
+            classes.FloorPlan(canvas, fp_list + ".png")
             program_setup.current_floor_plan = fp_list
 
         if os.path.exists("saved_locations/devices.pk1"):
             pickle_in = open("saved_locations/devices.pk1", "rb")
             saved_devices = pickle.load(pickle_in)
             # Will have to destroy all devices currently showing before adding these.
+            # for d in all_devices:
+            #     d.destroy()
+            #     print("destroyed")
+            all_devices.clear()
             for d in saved_devices:
                 if d['floor_plan'] == program_setup.current_floor_plan:
                     all_devices.append(classes.DeviceIcon(canvas,
