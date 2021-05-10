@@ -59,19 +59,27 @@ def save_devices():
     pickle_out.close()
     print("SAVED DEVICES!!!!")
 
-    # TODO: This will save it to a json file instead of pickling
-    json_save_data = {program_setup.current_floor_plan: devices_to_pickle}
-    with open('saved_locations/floor_plan_data.json') as f:
-        loaded_devices = json.load(f)
-    loaded_devices[program_setup.current_floor_plan] = devices_to_pickle
+    # json_save_data = {program_setup.current_floor_plan: devices_to_pickle}
+    # This will save it to a json file instead of pickling
+    # Try to open a file with floor plans in it
+    try:
+        with open('saved_locations/floor_plan_data.json') as f:
+            loaded_devices = json.load(f)
+        loaded_devices[program_setup.current_floor_plan] = devices_to_pickle
+    # If there is no floor plan saved yet it will throw an error, then it should create a new line
+    except json.decoder.JSONDecodeError:
+        loaded_devices = {program_setup.current_floor_plan: devices_to_pickle}
     with open('saved_locations/floor_plan_data.json', 'w') as outfile:
-        json.dump(loaded_devices, outfile)
+        json.dump(loaded_devices, outfile, indent=4)
 
 
 def load_plan(fp_list, root, canvas):
     print(fp_list)
-    with open('saved_locations/floor_plan_data.json') as f:
-        loaded_devices = json.load(f)
+    try:
+        with open('saved_locations/floor_plan_data.json') as f:
+            loaded_devices = json.load(f)
+    except:
+        loaded_devices = ""
     print(loaded_devices)
 
     if fp_list:
@@ -91,15 +99,18 @@ def load_plan(fp_list, root, canvas):
             #     print("destroyed")
             floor_plan_devices.clear()
             # for d in saved_devices:
-            if program_setup.current_floor_plan in loaded_devices:
-                # if d['floor_plan'] == program_setup.current_floor_plan:
-                for d in loaded_devices[program_setup.current_floor_plan]:
-                    floor_plan_devices.append(classes.DeviceIcon(canvas,
-                                                                 d['image_path'].split("/")[-1:][0],
-                                                                 d['xpos'],
-                                                                 d['ypos'],
-                                                                 root,
-                                                                 d['device_name']))
+            try:
+                if program_setup.current_floor_plan in loaded_devices:
+                    # if d['floor_plan'] == program_setup.current_floor_plan:
+                    for d in loaded_devices[program_setup.current_floor_plan]:
+                        floor_plan_devices.append(classes.DeviceIcon(canvas,
+                                                                     d['image_path'].split("/")[-1:][0],
+                                                                     d['xpos'],
+                                                                     d['ypos'],
+                                                                     root,
+                                                                     d['device_name']))
+            except:
+                pass
         else:
             print("No Devices on the floorplan")
 
