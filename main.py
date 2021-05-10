@@ -1,6 +1,6 @@
 import tkinter as tk
 import classes
-from global_variables import *
+import global_variables
 import json
 # from setup import *
 import pickle
@@ -15,18 +15,20 @@ class BaseWindow(object):
         self.current_floor_plan = None
         # root.iconbitmap("\\images\\greeen_circle.png")
         self.root.geometry("800x600")
-        self.canvas = tk.Canvas(self.root, width=w, height=h, bg="white")
+        self.canvas = tk.Canvas(self.root, width=global_variables.w, height=global_variables.h, bg="white")
         # self.canvas.pack(pady=20)
-        self.canvas.grid(row=1, rowspan=5, column=1, columnspan=8)
+        self.canvas.grid(row=1, rowspan=10, column=1, columnspan=10)
         # self.alert_message = tk.Label(self.root, text="HELLO")
         # Pack
         # self.alert_message.pack(pady=30, side=tk.RIGHT)
         # self.alert_message.grid(row=10, rowspan=1, column=1, columnspan=1)
-        self.selected_device = None
         self.save_button = tk.Button(self.root, text="Save", command=save_devices)
         # self.save_button.pack(pady=20)
-        self.save_button.grid(row=3, rowspan=1, column=10, columnspan=1)
-        new_device_button = classes.NewDeviceButton(self.canvas, self.root, floor_plan_devices)
+        self.save_button.grid(row=4, rowspan=1, column=11, columnspan=1)
+        new_device_button = classes.NewDeviceButton(self.canvas, self.root, global_variables.floor_plan_devices)
+        self.delete_device_button = tk.Button(self.root, text="Delete Device",
+                                              command=delete_device)
+        self.delete_device_button.grid(row=3, rowspan=1, column=11, columnspan=1)
         # classes.DeleteDeviceButton(program_canvas.canvas)
         self.floor_plan_list = classes.FloorPlanList(self.root)
         # self.load_fp_button = tk.Button(self.root, text="Load Floor Plan", command=lambda: load_plan(self.floor_plan_list))
@@ -35,17 +37,49 @@ class BaseWindow(object):
                                         command=lambda: load_plan(fp_list=self.floor_plan_list.floor_plan_listbox.get(self.floor_plan_list.floor_plan_listbox.curselection()[0]),
                                                                   root=self.root,
                                                                   canvas=self.canvas))
-        self.load_fp_button.grid(row=6, rowspan=1, column=3, columnspan=1)
+        self.load_fp_button.grid(row=11, rowspan=1, column=3, columnspan=1)
 
         # Load floorplan
         load_plan(fp_list=None, root=self.root, canvas=self.canvas)
-        self.floor_plan_list.add_all_floor_plans(sorted(floor_plans))
+        self.floor_plan_list.add_all_floor_plans(sorted(global_variables.floor_plans))
+
+
+def confirm_delete_device(confirm_window):
+    print("Delete Device")
+    # TODO: Delete the selected device by doing the following
+    # If the device floor plan is the same as the current floor plan, then delete it from the floor plan list
+    # Might have to move the current floor plan to be in global_variable.py instead of an attribute of the BaseWindow
+    confirm_window.destroy()
+
+
+def cancel_delete_device(confirm_window):
+    confirm_window.destroy()
+    global_variables.selected_device = None
+
+
+def delete_device():
+    print(global_variables.selected_device.device_name)
+    confirm_delete_window = tk.Toplevel(width=100, height=100)
+    confirm_delete_window.geometry("%dx%d%+d%+d" % (200, 100, 250, 125))
+    confirm_delete_window.title("Really!?")
+    confirm_message = tk.Label(master=confirm_delete_window, text="Do you want to delete this device?\nThis cannot be undone")
+    confirm_message.pack()
+    device_info = tk.Label(master=confirm_delete_window, text=global_variables.selected_device.device_name)
+    device_info.pack()
+    # device_name.grid(row=0, column=0, columnspan=2)
+    confirm = tk.Button(master=confirm_delete_window, text="Yes, Delete",
+                        command=lambda: confirm_delete_device(confirm_delete_window))
+    confirm.pack()
+    cancel_button = tk.Button(master=confirm_delete_window, text="Cancel",
+                              command=lambda: cancel_delete_device(confirm_delete_window))
+    # cancel_button.grid(row=1, column=1, columnspan=1)
+    cancel_button.pack()
 
 
 def save_devices():
     # Can't pickle tKinter objects. Need to convert xpos, ypos, and image to dict
     devices_to_pickle = []
-    for d in floor_plan_devices:
+    for d in global_variables.floor_plan_devices:
         this_device = {'device_name': d.__dict__['device_name'],
                        'image_path': d.__dict__['image_path'],
                        'xpos': d.__dict__['xpos'],
@@ -63,6 +97,7 @@ def save_devices():
     # This will save it to a json file instead of pickling
     # Try to open a file with floor plans in it
     try:
+        # TODO: If there is no file to open, then create a file
         with open('saved_locations/floor_plan_data.json') as f:
             loaded_devices = json.load(f)
         loaded_devices[program_setup.current_floor_plan] = devices_to_pickle
@@ -97,18 +132,18 @@ def load_plan(fp_list, root, canvas):
             # for d in floor_plan_devices:
             #     d.destroy()
             #     print("destroyed")
-            floor_plan_devices.clear()
+            global_variables.floor_plan_devices.clear()
             # for d in saved_devices:
             try:
                 if program_setup.current_floor_plan in loaded_devices:
                     # if d['floor_plan'] == program_setup.current_floor_plan:
                     for d in loaded_devices[program_setup.current_floor_plan]:
-                        floor_plan_devices.append(classes.DeviceIcon(canvas,
-                                                                     d['image_path'].split("/")[-1:][0],
-                                                                     d['xpos'],
-                                                                     d['ypos'],
-                                                                     root,
-                                                                     d['device_name']))
+                        global_variables.floor_plan_devices.append(classes.DeviceIcon(canvas,
+                                                                                      d['image_path'].split("/")[-1:][0],
+                                                                                      d['xpos'],
+                                                                                      d['ypos'],
+                                                                                      root,
+                                                                                      d['device_name']))
             except:
                 pass
         else:

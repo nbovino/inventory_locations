@@ -1,7 +1,8 @@
 # I need to make an object here that will be able to be drawn on the canvas make a computer class
 # and it will be a green circle that you an move around but only if you click where the circle is
 import tkinter as tk
-from global_variables import *
+# from global_variables import *
+import global_variables
 # from setup import *
 from PIL import ImageTk, Image
 import os
@@ -10,19 +11,21 @@ import os
 
 
 class DeviceIcon(object):
+
     def __init__(self, canvas, image_name, xpos, ypos, root, device_name):
         # This is the same variable in memory as root. So it shouldn't be creating a bunch of new variables
         self.root = root
+        # print(self.root.selected_device)
         self.canvas = canvas
         self.image_name = image_name
         self.device_name = device_name
         self.xpos, self.ypos = xpos, ypos
 
         self.tk_image = tk.PhotoImage(
-            file="{}{}".format(IMAGE_PATH + DEVICE_ICONS_PATH, image_name))
+            file="{}{}".format(global_variables.IMAGE_PATH + global_variables.DEVICE_ICONS_PATH, image_name))
         self.image_obj = canvas.create_image(
             xpos, ypos, image=self.tk_image)
-        self.image_path = IMAGE_PATH + DEVICE_ICONS_PATH + image_name
+        self.image_path = global_variables.IMAGE_PATH + global_variables.DEVICE_ICONS_PATH + image_name
 
         self.canvas.tag_bind(self.image_obj, '<Button1-Motion>', self.move)
         self.canvas.tag_bind(self.image_obj, '<ButtonRelease-1>', self.release)
@@ -50,10 +53,9 @@ class DeviceIcon(object):
         self.move_flag = False
 
     def clicked(self, event):
-        self.root.selected_device = self
-        print(self.root.selected_device)
         print("Device Selected - X: " + str(self.xpos) + " Y: " + str(self.ypos))
         print(self.device_name)
+        global_variables.selected_device = self
 
 
 class FloorPlan(object):
@@ -61,10 +63,10 @@ class FloorPlan(object):
         if image_name:
             # USING PILLOW TO RESIZE IMAGE
             # Open Image
-            my_pic = Image.open(IMAGE_PATH + LAYOUTS_PATH + image_name)
+            my_pic = Image.open(global_variables.IMAGE_PATH + global_variables.LAYOUTS_PATH + image_name)
 
             # Resize Image to the width and height of the canvas
-            resized = my_pic.resize((w, h), Image.ANTIALIAS)
+            resized = my_pic.resize((global_variables.w, global_variables.h), Image.ANTIALIAS)
 
             # Make the resized pic into a PhotoImage
             new_pic = ImageTk.PhotoImage(resized)
@@ -83,7 +85,7 @@ class NewDeviceButton(object):
         self.all_devices = all_devices
         self.new_device_button = tk.Button(root, text="Add Device", command=self.toggle)
         # self.new_device_button.pack(padx=40)
-        self.new_device_button.grid(row=2, rowspan=1, column=10, columnspan=1)
+        self.new_device_button.grid(row=2, rowspan=1, column=11, columnspan=1)
         self.clicked = False
         canvas.bind("<Button-1>", self.test)
         # print("CREATED BUTTON")
@@ -93,7 +95,6 @@ class NewDeviceButton(object):
             self.clicked = False
             print("Turned Off")
         else:
-            self.clicked = True
             print("Turned On")
 
     def test(self, event):
@@ -135,7 +136,7 @@ class FloorPlanList(object):
     def __init__(self, root):
         self.root = root
         self.floor_plan_listbox = tk.Listbox(self.root)
-        self.floor_plan_listbox.grid(row=6, rowspan=4, column=0, columnspan=3)
+        self.floor_plan_listbox.grid(row=11, rowspan=4, column=0, columnspan=3)
 
     def add_all_floor_plans(self, floor_plan_list):
         for p in floor_plan_list:
@@ -147,7 +148,7 @@ class MessageLabel(object):
         self.message = message
         self.message_label = tk.Label(self.root, text=self.message)
         # self.message_label.pack(pady=60)
-        self.message_label.grid(row=7, rowspan=1, column=1, columnspan=1)
+        self.message_label.grid(row=12, rowspan=1, column=1, columnspan=1)
         print("GOT HERE")
 
 

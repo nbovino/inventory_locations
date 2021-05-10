@@ -1,0 +1,27 @@
+{
+    "apartment": [
+        {
+            "device_name": "Lenovo laptop",
+            "image_path": "images/device_icons/green_circle.png",
+            "xpos": 271,
+            "ypos": 150,
+            "floor_plan": "apartment"
+        },
+        {
+            "device_name": "apple laptop",
+            "image_path": "images/device_icons/green_circle.png",
+            "xpos": 437,
+            "ypos": 155,
+            "floor_plan": "apartment"
+        }
+    ],
+    "Test_floor_plan": [
+        {
+            "device_name": "testing device",
+            "image_path": "images/device_icons/green_circle.png",
+            "xpos": 471,
+            "ypos": 159,
+            "floor_plan": "Test_floor_plan"
+        }
+    ]
+}

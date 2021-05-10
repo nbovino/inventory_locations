@@ -3,6 +3,9 @@ import os
 floor_plan_devices = []
 floor_plans = []
 
+selected_device = None
+current_floor_plan = None
+
 IMAGE_PATH = "images/"
 LAYOUTS_PATH = "layouts/"
 DEVICE_ICONS_PATH = "device_icons/"
