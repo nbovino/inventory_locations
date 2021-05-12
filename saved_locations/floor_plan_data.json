@@ -1,17 +1,10 @@
 {
     "apartment": [
         {
-            "device_name": "Lenovo laptop",
+            "device_name": "Mac computer",
             "image_path": "images/device_icons/green_circle.png",
-            "xpos": 271,
-            "ypos": 150,
-            "floor_plan": "apartment"
-        },
-        {
-            "device_name": "apple laptop",
-            "image_path": "images/device_icons/green_circle.png",
-            "xpos": 437,
-            "ypos": 155,
+            "xpos": 421,
+            "ypos": 138,
             "floor_plan": "apartment"
         }
     ],

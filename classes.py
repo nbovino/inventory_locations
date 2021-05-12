@@ -33,19 +33,20 @@ class DeviceIcon(object):
         self.move_flag = False
 
     def move(self, event):
-        if self.move_flag:
-            new_xpos, new_ypos = event.x, event.y
+        if global_variables.devices_movable:
+            if self.move_flag:
+                new_xpos, new_ypos = event.x, event.y
 
-            self.canvas.move(self.image_obj,
-                             new_xpos - self.mouse_xpos, new_ypos - self.mouse_ypos)
+                self.canvas.move(self.image_obj,
+                                 new_xpos - self.mouse_xpos, new_ypos - self.mouse_ypos)
 
-            self.mouse_xpos = new_xpos
-            self.mouse_ypos = new_ypos
-        else:
-            self.move_flag = True
-            self.canvas.tag_raise(self.image_obj)
-            self.mouse_xpos = event.x
-            self.mouse_ypos = event.y
+                self.mouse_xpos = new_xpos
+                self.mouse_ypos = new_ypos
+            else:
+                self.move_flag = True
+                self.canvas.tag_raise(self.image_obj)
+                self.mouse_xpos = event.x
+                self.mouse_ypos = event.y
 
     def release(self, event):
         print(event.x, event.y)
@@ -95,6 +96,7 @@ class NewDeviceButton(object):
             self.clicked = False
             print("Turned Off")
         else:
+            self.clicked = True
             print("Turned On")
 
     def test(self, event):
@@ -130,6 +132,24 @@ class NewDeviceButton(object):
                                            event.y,
                                            self.root,
                                            device_name))
+
+
+class MoveDevicesButton(object):
+    def __init__(self, canvas, root):
+        self.canvas = canvas
+        self.root = root
+        self.move_devices_button = tk.Button(root, text="Move Devices", command=self.toggle)
+        # self.new_device_button.pack(padx=40)
+        self.move_devices_button.grid(row=3, rowspan=1, column=11, columnspan=1)
+        self.clicked = False
+        # canvas.bind("<Button-1>", self.test)
+        # print("CREATED BUTTON")
+
+    def toggle(self):
+        if global_variables.devices_movable:
+            global_variables.devices_movable = False
+        else:
+            global_variables.devices_movable = True
 
 
 class FloorPlanList(object):

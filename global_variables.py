@@ -5,6 +5,8 @@ floor_plans = []
 
 selected_device = None
 current_floor_plan = None
+devices_movable = False
+made_changes = False
 
 IMAGE_PATH = "images/"
 LAYOUTS_PATH = "layouts/"
