@@ -42,16 +42,19 @@ class DeviceIcon(object):
 
                 self.mouse_xpos = new_xpos
                 self.mouse_ypos = new_ypos
+                global_variables.made_changes = True
             else:
                 self.move_flag = True
                 self.canvas.tag_raise(self.image_obj)
                 self.mouse_xpos = event.x
                 self.mouse_ypos = event.y
+                global_variables.made_changes = True
 
     def release(self, event):
         print(event.x, event.y)
         self.xpos, self.ypos = event.x, event.y
         self.move_flag = False
+        global_variables.made_changes = True
 
     def clicked(self, event):
         print("Device Selected - X: " + str(self.xpos) + " Y: " + str(self.ypos))
@@ -132,6 +135,7 @@ class NewDeviceButton(object):
                                            event.y,
                                            self.root,
                                            device_name))
+        global_variables.made_changes = True
 
 
 class MoveDevicesButton(object):

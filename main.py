@@ -71,6 +71,7 @@ def confirm_delete_device(confirm_window):
     # If the device floor plan is the same as the current floor plan, then delete it from the floor plan list
     # Might have to move the current floor plan to be in global_variable.py instead of an attribute of the BaseWindow
     confirm_window.destroy()
+    global_variables.made_changes = True
 
 
 def cancel_delete_device(confirm_window):
@@ -127,10 +128,13 @@ def save_devices():
         loaded_devices = {program_setup.current_floor_plan: devices_to_pickle}
     with open('saved_locations/floor_plan_data.json', 'w') as outfile:
         json.dump(loaded_devices, outfile, indent=4)
+    global_variables.made_changes = False
 
 
 def load_plan(fp_list, root, canvas, loaded_devices=None):
     print(fp_list)
+    # TODO: If global_variables.made_changes is True, ask the user to verify they really want to load another floor plan
+    # TODO: since the changes will not be saved if they load another floor plan if it was not saved.
     if loaded_devices is None:
         try:
             with open('saved_locations/floor_plan_data.json') as f:
