@@ -35,38 +35,121 @@ class BaseWindow(object):
         # self.load_fp_button = tk.Button(self.root, text="Load Floor Plan", command=lambda: load_plan(self.floor_plan_list))
         # The lambda that this causes to happen sends the selected item in the listbox
         self.load_fp_button = tk.Button(self.root, text="Load Floor Plan",
-                                        command=lambda: load_plan(fp_list=self.floor_plan_list.floor_plan_listbox.get(self.floor_plan_list.floor_plan_listbox.curselection()[0]),
-                                                                  root=self.root,
-                                                                  canvas=self.canvas))
+                                        command=lambda: load_plan(root=self.root,
+                                                                  canvas=self.canvas,
+                                                                  floor_plan_name=self.floor_plan_list.floor_plan_listbox.get(self.floor_plan_list.floor_plan_listbox.curselection()[0]),
+                                                                  loaded_devices=get_devices_of_floor_plan(self.floor_plan_list.floor_plan_listbox.get(self.floor_plan_list.floor_plan_listbox.curselection()[0]))))
         self.load_fp_button.grid(row=11, rowspan=1, column=3, columnspan=1)
 
         # Load floorplan
-        load_plan(fp_list=None, root=self.root, canvas=self.canvas)
+        load_plan(floor_plan_name=None, root=self.root, canvas=self.canvas)
         self.floor_plan_list.add_all_floor_plans(sorted(global_variables.floor_plans))
+
+
+# returns list of devices in floor plan
+def get_devices_of_floor_plan(floor_plan):
+    try:
+        with open('saved_locations/floor_plan_data.json') as f:
+            json_data = json.load(f)
+            print("json Data!!!!!!!!!!!!!!")
+            print(json_data[floor_plan])
+            return json_data[floor_plan]
+    except:
+        return None
 
 
 # Loads devices to floor plan
 def load_devices_to_floor_plan(devices):
-    if program_setup.current_floor_plan in devices:
-        # if d['floor_plan'] == program_setup.current_floor_plan:
-        for d in devices[program_setup.current_floor_plan]:
-            global_variables.floor_plan_devices.append(classes.DeviceIcon(program_setup.canvas,
-                                                                          d['image_path'].split("/")[-1:][0],
-                                                                          d['xpos'],
-                                                                          d['ypos'],
-                                                                          program_setup.root,
-                                                                          d['device_name']))
+    print("LOAD DEVICES TO FLOOR PLAN and current FP is: " + program_setup.current_floor_plan)
+    # Reset the floor_plan_devices to zero
+    global_variables.floor_plan_devices = []
+    for d in devices:
+        print(d['floor_plan'])
+        global_variables.floor_plan_devices.append(classes.DeviceIcon(program_setup.canvas,
+                                                                      d['image_path'].split("/")[-1:][0],
+                                                                      d['xpos'],
+                                                                      d['ypos'],
+                                                                      program_setup.root,
+                                                                      d['device_name']))
+
+
+def load_plan(root, canvas, floor_plan_name=None, loaded_devices=None):
+    print(floor_plan_name)
+    print("Loaded devices on this floor plan:")
+    print(loaded_devices)
+    # TODO: If global_variables.made_changes is True, ask the user to verify they really want to load another floor plan
+    # TODO: since the changes will not be saved if they load another floor plan if it was not saved.
+
+    # If there is a floor plan name, load the floor plan
+    if floor_plan_name:
+        if os.path.exists("saved_locations/devices.pk1"):
+            classes.FloorPlan(canvas, floor_plan_name + ".png")
+            program_setup.current_floor_plan = floor_plan_name
+            print("Current floor plan is: ")
+            print(program_setup.current_floor_plan)
+        # If there are loaded devices, load the devices
+        if loaded_devices:
+            print("THERE ARE DEVICES ON THIS FLOOR PLAN")
+            load_devices_to_floor_plan(loaded_devices)
+        # else, say there are no devices in the floor plan
+        else:
+            print("No devices on the floor plan")
+    # else - no floor plan selected
+    else:
+        print("No floor plan selected")
+    # if loaded_devices is None:
+    #     try:
+    #         with open('saved_locations/floor_plan_data.json') as f:
+    #             loaded_devices = json.load(f)
+    #     except:
+    #         loaded_devices = ""
+    #     print(loaded_devices)
+    # elif loaded_devices.len() <= 0:
+    #     print("No Devices on the floorplan")
+    # else:
+    #     if floor_plan_name:
+    #         if os.path.exists("saved_locations/devices.pk1"):
+    #             classes.FloorPlan(canvas, floor_plan_name + ".png")
+    #             program_setup.current_floor_plan = floor_plan_name
+    #         else:
+    #             classes.FloorPlan(canvas, floor_plan_name + ".png")
+    #             program_setup.current_floor_plan = floor_plan_name
+    #
+    #         if os.path.exists("saved_locations/devices.pk1"):
+    #             pickle_in = open("saved_locations/devices.pk1", "rb")
+    #             saved_devices = pickle.load(pickle_in)
+    #             # Will have to destroy all devices currently showing before adding these.
+    #             # for d in floor_plan_devices:
+    #             #     d.destroy()
+    #             #     print("destroyed")
+    #             global_variables.floor_plan_devices.clear()
+    #             # for d in saved_devices:
+    #             try:
+    #                 load_devices_to_floor_plan(loaded_devices)
+    #                 # if program_setup.current_floor_plan in loaded_devices:
+    #                 #     # if d['floor_plan'] == program_setup.current_floor_plan:
+    #                 #     for d in loaded_devices[program_setup.current_floor_plan]:
+    #                 #         global_variables.floor_plan_devices.append(classes.DeviceIcon(canvas,
+    #                 #                                                                       d['image_path'].split("/")[-1:][0],
+    #                 #                                                                       d['xpos'],
+    #                 #                                                                       d['ypos'],
+    #                 #                                                                       root,
+    #                 #                                                                       d['device_name']))
+    #             except:
+    #                 pass
 
 
 def confirm_delete_device(confirm_window):
     print("Delete Device")
-    # TODO: Delete the selected device by doing the following
-    program_setup.canvas.delete(global_variables.selected_device)
+    # TODO: Deleting one device actually deletes all the devices on the floor plan
+    # program_setup.canvas.delete(global_variables.selected_device)
+    print(global_variables.floor_plan_devices)
     global_variables.floor_plan_devices.remove(global_variables.selected_device)
+    print(global_variables.floor_plan_devices)
     # load_devices_to_floor_plan(global_variables.floor_plan_devices)
-    load_plan(fp_list=program_setup.current_floor_plan,
-              root=program_setup.root,
+    load_plan(root=program_setup.root,
               canvas=program_setup.canvas,
+              floor_plan_name=program_setup.current_floor_plan,
               loaded_devices=global_variables.floor_plan_devices)
     # If the device floor plan is the same as the current floor plan, then delete it from the floor plan list
     # Might have to move the current floor plan to be in global_variable.py instead of an attribute of the BaseWindow
@@ -80,22 +163,23 @@ def cancel_delete_device(confirm_window):
 
 
 def delete_device():
-    print(global_variables.selected_device.device_name)
-    confirm_delete_window = tk.Toplevel(width=100, height=100)
-    confirm_delete_window.geometry("%dx%d%+d%+d" % (200, 100, 250, 125))
-    confirm_delete_window.title("Really!?")
-    confirm_message = tk.Label(master=confirm_delete_window, text="Do you want to delete this device?\nThis cannot be undone")
-    confirm_message.pack()
-    device_info = tk.Label(master=confirm_delete_window, text=global_variables.selected_device.device_name)
-    device_info.pack()
-    # device_name.grid(row=0, column=0, columnspan=2)
-    confirm = tk.Button(master=confirm_delete_window, text="Yes, Delete",
-                        command=lambda: confirm_delete_device(confirm_delete_window))
-    confirm.pack()
-    cancel_button = tk.Button(master=confirm_delete_window, text="Cancel",
-                              command=lambda: cancel_delete_device(confirm_delete_window))
-    # cancel_button.grid(row=1, column=1, columnspan=1)
-    cancel_button.pack()
+    if global_variables.selected_device:
+        print(global_variables.selected_device.device_name)
+        confirm_delete_window = tk.Toplevel(width=100, height=100)
+        confirm_delete_window.geometry("%dx%d%+d%+d" % (200, 100, 250, 125))
+        confirm_delete_window.title("Really!?")
+        confirm_message = tk.Label(master=confirm_delete_window, text="Do you want to delete this device?\nThis cannot be undone")
+        confirm_message.pack()
+        device_info = tk.Label(master=confirm_delete_window, text=global_variables.selected_device.device_name)
+        device_info.pack()
+        # device_name.grid(row=0, column=0, columnspan=2)
+        confirm = tk.Button(master=confirm_delete_window, text="Yes, Delete",
+                            command=lambda: confirm_delete_device(confirm_delete_window))
+        confirm.pack()
+        cancel_button = tk.Button(master=confirm_delete_window, text="Cancel",
+                                  command=lambda: cancel_delete_device(confirm_delete_window))
+        # cancel_button.grid(row=1, column=1, columnspan=1)
+        cancel_button.pack()
 
 
 def save_devices():
@@ -129,52 +213,6 @@ def save_devices():
     with open('saved_locations/floor_plan_data.json', 'w') as outfile:
         json.dump(loaded_devices, outfile, indent=4)
     global_variables.made_changes = False
-
-
-def load_plan(fp_list, root, canvas, loaded_devices=None):
-    print(fp_list)
-    # TODO: If global_variables.made_changes is True, ask the user to verify they really want to load another floor plan
-    # TODO: since the changes will not be saved if they load another floor plan if it was not saved.
-    if loaded_devices is None:
-        try:
-            with open('saved_locations/floor_plan_data.json') as f:
-                loaded_devices = json.load(f)
-        except:
-            loaded_devices = ""
-        print(loaded_devices)
-
-    if fp_list:
-        if os.path.exists("saved_locations/devices.pk1"):
-            classes.FloorPlan(canvas, fp_list + ".png")
-            program_setup.current_floor_plan = fp_list
-        else:
-            classes.FloorPlan(canvas, fp_list + ".png")
-            program_setup.current_floor_plan = fp_list
-
-        if os.path.exists("saved_locations/devices.pk1"):
-            pickle_in = open("saved_locations/devices.pk1", "rb")
-            saved_devices = pickle.load(pickle_in)
-            # Will have to destroy all devices currently showing before adding these.
-            # for d in floor_plan_devices:
-            #     d.destroy()
-            #     print("destroyed")
-            global_variables.floor_plan_devices.clear()
-            # for d in saved_devices:
-            try:
-                load_devices_to_floor_plan(loaded_devices)
-                # if program_setup.current_floor_plan in loaded_devices:
-                #     # if d['floor_plan'] == program_setup.current_floor_plan:
-                #     for d in loaded_devices[program_setup.current_floor_plan]:
-                #         global_variables.floor_plan_devices.append(classes.DeviceIcon(canvas,
-                #                                                                       d['image_path'].split("/")[-1:][0],
-                #                                                                       d['xpos'],
-                #                                                                       d['ypos'],
-                #                                                                       root,
-                #                                                                       d['device_name']))
-            except:
-                pass
-        else:
-            print("No Devices on the floorplan")
 
 
 def add_device():

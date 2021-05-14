@@ -1,10 +1,10 @@
 {
     "apartment": [
         {
-            "device_name": "Mac computer",
+            "device_name": "testing device",
             "image_path": "images/device_icons/green_circle.png",
-            "xpos": 421,
-            "ypos": 138,
+            "xpos": 265,
+            "ypos": 150,
             "floor_plan": "apartment"
         }
     ],
@@ -12,8 +12,8 @@
         {
             "device_name": "testing device",
             "image_path": "images/device_icons/green_circle.png",
-            "xpos": 471,
-            "ypos": 159,
+            "xpos": 265,
+            "ypos": 150,
             "floor_plan": "Test_floor_plan"
         }
     ]
