@@ -12,7 +12,7 @@ class BaseWindow(object):
     def __init__(self):
         self.root = tk.Tk()
         self.root.title('Inventory Locations')
-        self.current_floor_plan = None
+        # self.current_floor_plan = None
         # root.iconbitmap("\\images\\greeen_circle.png")
         self.root.geometry("800x600")
         self.canvas = tk.Canvas(self.root, width=global_variables.w, height=global_variables.h, bg="white")
@@ -62,6 +62,8 @@ def get_devices_of_floor_plan(floor_plan):
 def load_devices_to_floor_plan(devices):
     print("LOAD DEVICES TO FLOOR PLAN and current FP is: " + program_setup.current_floor_plan)
     # Reset the floor_plan_devices to zero
+    for d in global_variables.floor_plan_devices:
+        del d
     global_variables.floor_plan_devices = []
     for d in devices:
         print(d['floor_plan'])

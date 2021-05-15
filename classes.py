@@ -129,12 +129,18 @@ class NewDeviceButton(object):
         print(str(event.x) + " | " + str(event.y))
         self.device_name_window.destroy()
         print(device_name)
-        self.all_devices.append(DeviceIcon(self.canvas,
-                                           "green_circle.png",
-                                           event.x,
-                                           event.y,
-                                           self.root,
-                                           device_name))
+        # self.all_devices.append(DeviceIcon(self.canvas,
+        #                                    "green_circle.png",
+        #                                    event.x,
+        #                                    event.y,
+        #                                    self.root,
+        #                                    device_name))
+        global_variables.floor_plan_devices.append(DeviceIcon(self.canvas,
+                                                              "green_circle.png",
+                                                              event.x,
+                                                              event.y,
+                                                              self.root,
+                                                              device_name))
         global_variables.made_changes = True
 
 

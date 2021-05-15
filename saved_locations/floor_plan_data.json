@@ -3,8 +3,15 @@
         {
             "device_name": "testing device",
             "image_path": "images/device_icons/green_circle.png",
-            "xpos": 265,
-            "ypos": 150,
+            "xpos": 437,
+            "ypos": 152,
+            "floor_plan": "apartment"
+        },
+        {
+            "device_name": "dgsdgsdfg",
+            "image_path": "images/device_icons/green_circle.png",
+            "xpos": 242,
+            "ypos": 131,
             "floor_plan": "apartment"
         }
     ],
