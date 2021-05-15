@@ -37,8 +37,10 @@ class BaseWindow(object):
         self.load_fp_button = tk.Button(self.root, text="Load Floor Plan",
                                         command=lambda: load_plan(root=self.root,
                                                                   canvas=self.canvas,
-                                                                  floor_plan_name=self.floor_plan_list.floor_plan_listbox.get(self.floor_plan_list.floor_plan_listbox.curselection()[0]),
-                                                                  loaded_devices=get_devices_of_floor_plan(self.floor_plan_list.floor_plan_listbox.get(self.floor_plan_list.floor_plan_listbox.curselection()[0]))))
+                                                                  floor_plan_name=self.floor_plan_list.floor_plan_listbox.get(self.floor_plan_list.floor_plan_listbox.curselection()[0])#,
+                                                                  #loaded_devices=get_devices_of_floor_plan(self.floor_plan_list.floor_plan_listbox.get(self.floor_plan_list.floor_plan_listbox.curselection()[0])))
+                                                                  )
+                                        )
         self.load_fp_button.grid(row=11, rowspan=1, column=3, columnspan=1)
 
         # Load floorplan
@@ -60,19 +62,31 @@ def get_devices_of_floor_plan(floor_plan):
 
 # Loads devices to floor plan
 def load_devices_to_floor_plan(devices):
-    print("LOAD DEVICES TO FLOOR PLAN and current FP is: " + program_setup.current_floor_plan)
+    print("LOAD DEVICES TO FLOOR PLAN and current FP is: " + global_variables.current_floor_plan)
     # Reset the floor_plan_devices to zero
-    for d in global_variables.floor_plan_devices:
-        del d
     global_variables.floor_plan_devices = []
+    print(type(devices))
+    # TODO: This is not working because when reading from saved data it is a list of dictionaries of the different
+    # when loading, devices is a list of dicts read from json data,
+    # but when deleting it is reading a list of DeviceIcon objects already loaded
+    # so when a device is deleted, it displays the floor plan but program stops before it loads the devices b/c they are objects
     for d in devices:
-        print(d['floor_plan'])
-        global_variables.floor_plan_devices.append(classes.DeviceIcon(program_setup.canvas,
-                                                                      d['image_path'].split("/")[-1:][0],
-                                                                      d['xpos'],
-                                                                      d['ypos'],
-                                                                      program_setup.root,
-                                                                      d['device_name']))
+        print(type(d))
+        # TODO: This is not the way to do this. I should always pass the same kind of data to the function.
+        try:
+            global_variables.floor_plan_devices.append(classes.DeviceIcon(program_setup.canvas,
+                                                                          d['image_path'].split("/")[-1:][0],
+                                                                          d['xpos'],
+                                                                          d['ypos'],
+                                                                          program_setup.root,
+                                                                          d['device_name']))
+        except TypeError:
+            global_variables.floor_plan_devices.append(classes.DeviceIcon(program_setup.canvas,
+                                                                          d.__dict__['image_path'].split("/")[-1:][0],
+                                                                          d.__dict__['xpos'],
+                                                                          d.__dict__['ypos'],
+                                                                          program_setup.root,
+                                                                          d.__dict__['device_name']))
 
 
 def load_plan(root, canvas, floor_plan_name=None, loaded_devices=None):
@@ -85,17 +99,20 @@ def load_plan(root, canvas, floor_plan_name=None, loaded_devices=None):
     # If there is a floor plan name, load the floor plan
     if floor_plan_name:
         if os.path.exists("saved_locations/devices.pk1"):
-            classes.FloorPlan(canvas, floor_plan_name + ".png")
-            program_setup.current_floor_plan = floor_plan_name
+            global_variables.current_floor_plan = floor_plan_name
             print("Current floor plan is: ")
-            print(program_setup.current_floor_plan)
+            print(global_variables.current_floor_plan)
+            # Display floor plan
+            classes.FloorPlan(canvas, floor_plan_name + ".png")
         # If there are loaded devices, load the devices
         if loaded_devices:
             print("THERE ARE DEVICES ON THIS FLOOR PLAN")
+            # print(type(loaded_devices))
             load_devices_to_floor_plan(loaded_devices)
         # else, say there are no devices in the floor plan
         else:
-            print("No devices on the floor plan")
+            # check to see if there are any devices saved for the floor plan and try that
+            load_devices_to_floor_plan(get_devices_of_floor_plan(global_variables.current_floor_plan))
     # else - no floor plan selected
     else:
         print("No floor plan selected")
@@ -143,15 +160,15 @@ def load_plan(root, canvas, floor_plan_name=None, loaded_devices=None):
 
 def confirm_delete_device(confirm_window):
     print("Delete Device")
-    # TODO: Deleting one device actually deletes all the devices on the floor plan
     # program_setup.canvas.delete(global_variables.selected_device)
+    # The device is being deleted from the current floor plan devices list
     print(global_variables.floor_plan_devices)
     global_variables.floor_plan_devices.remove(global_variables.selected_device)
     print(global_variables.floor_plan_devices)
     # load_devices_to_floor_plan(global_variables.floor_plan_devices)
     load_plan(root=program_setup.root,
               canvas=program_setup.canvas,
-              floor_plan_name=program_setup.current_floor_plan,
+              floor_plan_name=global_variables.current_floor_plan,
               loaded_devices=global_variables.floor_plan_devices)
     # If the device floor plan is the same as the current floor plan, then delete it from the floor plan list
     # Might have to move the current floor plan to be in global_variable.py instead of an attribute of the BaseWindow
@@ -192,7 +209,7 @@ def save_devices():
                        'image_path': d.__dict__['image_path'],
                        'xpos': d.__dict__['xpos'],
                        'ypos': d.__dict__['ypos'],
-                       'floor_plan': program_setup.current_floor_plan}
+                       'floor_plan': global_variables.current_floor_plan}
         # devices_to_pickle.append(d.__dict__)
         devices_to_pickle.append(this_device)
     print(devices_to_pickle)
@@ -208,10 +225,10 @@ def save_devices():
         # TODO: If there is no file to open, then create a file
         with open('saved_locations/floor_plan_data.json') as f:
             loaded_devices = json.load(f)
-        loaded_devices[program_setup.current_floor_plan] = devices_to_pickle
+        loaded_devices[global_variables.current_floor_plan] = devices_to_pickle
     # If there is no floor plan saved yet it will throw an error, then it should create a new line
     except json.decoder.JSONDecodeError:
-        loaded_devices = {program_setup.current_floor_plan: devices_to_pickle}
+        loaded_devices = {global_variables.current_floor_plan: devices_to_pickle}
     with open('saved_locations/floor_plan_data.json', 'w') as outfile:
         json.dump(loaded_devices, outfile, indent=4)
     global_variables.made_changes = False

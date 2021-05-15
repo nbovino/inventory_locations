@@ -1,17 +1,10 @@
 {
     "apartment": [
         {
-            "device_name": "testing device",
+            "device_name": "asdfasdfasdfasdf",
             "image_path": "images/device_icons/green_circle.png",
-            "xpos": 437,
-            "ypos": 152,
-            "floor_plan": "apartment"
-        },
-        {
-            "device_name": "dgsdgsdfg",
-            "image_path": "images/device_icons/green_circle.png",
-            "xpos": 242,
-            "ypos": 131,
+            "xpos": 427,
+            "ypos": 158,
             "floor_plan": "apartment"
         }
     ],
@@ -22,6 +15,15 @@
             "xpos": 265,
             "ypos": 150,
             "floor_plan": "Test_floor_plan"
+        }
+    ],
+    "null": [
+        {
+            "device_name": "testing device",
+            "image_path": "images/device_icons/green_circle.png",
+            "xpos": 437,
+            "ypos": 152,
+            "floor_plan": null
         }
     ]
 }
