@@ -55,7 +55,16 @@ def get_devices_of_floor_plan(floor_plan):
             json_data = json.load(f)
             print("json Data!!!!!!!!!!!!!!")
             print(json_data[floor_plan])
-            return json_data[floor_plan]
+            devices_to_return = []
+            for d in json_data[floor_plan]:
+                devices_to_return.append(classes.DeviceIcon(program_setup.canvas,
+                                                            d['image_path'].split("/")[-1:][0],
+                                                            d['xpos'],
+                                                            d['ypos'],
+                                                            program_setup.root,
+                                                            d['device_name']))
+            # return json_data[floor_plan]
+            return devices_to_return
     except:
         return None
 
@@ -73,20 +82,20 @@ def load_devices_to_floor_plan(devices):
     for d in devices:
         print(type(d))
         # TODO: This is not the way to do this. I should always pass the same kind of data to the function.
-        try:
-            global_variables.floor_plan_devices.append(classes.DeviceIcon(program_setup.canvas,
-                                                                          d['image_path'].split("/")[-1:][0],
-                                                                          d['xpos'],
-                                                                          d['ypos'],
-                                                                          program_setup.root,
-                                                                          d['device_name']))
-        except TypeError:
-            global_variables.floor_plan_devices.append(classes.DeviceIcon(program_setup.canvas,
-                                                                          d.__dict__['image_path'].split("/")[-1:][0],
-                                                                          d.__dict__['xpos'],
-                                                                          d.__dict__['ypos'],
-                                                                          program_setup.root,
-                                                                          d.__dict__['device_name']))
+        # try:
+        #     global_variables.floor_plan_devices.append(classes.DeviceIcon(program_setup.canvas,
+        #                                                                   d['image_path'].split("/")[-1:][0],
+        #                                                                   d['xpos'],
+        #                                                                   d['ypos'],
+        #                                                                   program_setup.root,
+        #                                                                   d['device_name']))
+        # except TypeError:
+        global_variables.floor_plan_devices.append(classes.DeviceIcon(program_setup.canvas,
+                                                                      d.__dict__['image_path'].split("/")[-1:][0],
+                                                                      d.__dict__['xpos'],
+                                                                      d.__dict__['ypos'],
+                                                                      program_setup.root,
+                                                                      d.__dict__['device_name']))
 
 
 def load_plan(root, canvas, floor_plan_name=None, loaded_devices=None):
@@ -105,7 +114,7 @@ def load_plan(root, canvas, floor_plan_name=None, loaded_devices=None):
             # Display floor plan
             classes.FloorPlan(canvas, floor_plan_name + ".png")
         # If there are loaded devices, load the devices
-        if loaded_devices:
+        if loaded_devices and len(loaded_devices) > 0:
             print("THERE ARE DEVICES ON THIS FLOOR PLAN")
             # print(type(loaded_devices))
             load_devices_to_floor_plan(loaded_devices)
@@ -116,46 +125,6 @@ def load_plan(root, canvas, floor_plan_name=None, loaded_devices=None):
     # else - no floor plan selected
     else:
         print("No floor plan selected")
-    # if loaded_devices is None:
-    #     try:
-    #         with open('saved_locations/floor_plan_data.json') as f:
-    #             loaded_devices = json.load(f)
-    #     except:
-    #         loaded_devices = ""
-    #     print(loaded_devices)
-    # elif loaded_devices.len() <= 0:
-    #     print("No Devices on the floorplan")
-    # else:
-    #     if floor_plan_name:
-    #         if os.path.exists("saved_locations/devices.pk1"):
-    #             classes.FloorPlan(canvas, floor_plan_name + ".png")
-    #             program_setup.current_floor_plan = floor_plan_name
-    #         else:
-    #             classes.FloorPlan(canvas, floor_plan_name + ".png")
-    #             program_setup.current_floor_plan = floor_plan_name
-    #
-    #         if os.path.exists("saved_locations/devices.pk1"):
-    #             pickle_in = open("saved_locations/devices.pk1", "rb")
-    #             saved_devices = pickle.load(pickle_in)
-    #             # Will have to destroy all devices currently showing before adding these.
-    #             # for d in floor_plan_devices:
-    #             #     d.destroy()
-    #             #     print("destroyed")
-    #             global_variables.floor_plan_devices.clear()
-    #             # for d in saved_devices:
-    #             try:
-    #                 load_devices_to_floor_plan(loaded_devices)
-    #                 # if program_setup.current_floor_plan in loaded_devices:
-    #                 #     # if d['floor_plan'] == program_setup.current_floor_plan:
-    #                 #     for d in loaded_devices[program_setup.current_floor_plan]:
-    #                 #         global_variables.floor_plan_devices.append(classes.DeviceIcon(canvas,
-    #                 #                                                                       d['image_path'].split("/")[-1:][0],
-    #                 #                                                                       d['xpos'],
-    #                 #                                                                       d['ypos'],
-    #                 #                                                                       root,
-    #                 #                                                                       d['device_name']))
-    #             except:
-    #                 pass
 
 
 def confirm_delete_device(confirm_window):
@@ -164,16 +133,16 @@ def confirm_delete_device(confirm_window):
     # The device is being deleted from the current floor plan devices list
     print(global_variables.floor_plan_devices)
     global_variables.floor_plan_devices.remove(global_variables.selected_device)
+    print("AFTER DELETING THE DEVICE")
     print(global_variables.floor_plan_devices)
     # load_devices_to_floor_plan(global_variables.floor_plan_devices)
+    confirm_window.destroy()
+    global_variables.selected_device = None
+    global_variables.made_changes = True
     load_plan(root=program_setup.root,
               canvas=program_setup.canvas,
               floor_plan_name=global_variables.current_floor_plan,
               loaded_devices=global_variables.floor_plan_devices)
-    # If the device floor plan is the same as the current floor plan, then delete it from the floor plan list
-    # Might have to move the current floor plan to be in global_variable.py instead of an attribute of the BaseWindow
-    confirm_window.destroy()
-    global_variables.made_changes = True
 
 
 def cancel_delete_device(confirm_window):
@@ -203,32 +172,38 @@ def delete_device():
 
 def save_devices():
     # Can't pickle tKinter objects. Need to convert xpos, ypos, and image to dict
-    devices_to_pickle = []
-    for d in global_variables.floor_plan_devices:
-        this_device = {'device_name': d.__dict__['device_name'],
-                       'image_path': d.__dict__['image_path'],
-                       'xpos': d.__dict__['xpos'],
-                       'ypos': d.__dict__['ypos'],
-                       'floor_plan': global_variables.current_floor_plan}
-        # devices_to_pickle.append(d.__dict__)
-        devices_to_pickle.append(this_device)
-    print(devices_to_pickle)
-    pickle_out = open("saved_locations\devices.pk1", "wb")
-    pickle.dump(devices_to_pickle, pickle_out)
-    pickle_out.close()
-    print("SAVED DEVICES!!!!")
+    devices_to_save_in_floor_plan = []
+    # for d in global_variables.floor_plan_devices:
+    #     this_device = {'device_name': d.__dict__['device_name'],
+    #                    'image_path': d.__dict__['image_path'],
+    #                    'xpos': d.__dict__['xpos'],
+    #                    'ypos': d.__dict__['ypos'],
+    #                    'floor_plan': global_variables.current_floor_plan}
+    #     # devices_to_save_in_floor_plan.append(d.__dict__)
+    #     devices_to_save_in_floor_plan.append(this_device)
+    # print(devices_to_save_in_floor_plan)
+    # pickle_out = open("saved_locations\devices.pk1", "wb")
+    # pickle.dump(devices_to_save_in_floor_plan, pickle_out)
+    # pickle_out.close()
+    # print("SAVED DEVICES!!!!")
 
-    # json_save_data = {program_setup.current_floor_plan: devices_to_pickle}
+    # json_save_data = {program_setup.current_floor_plan: devices_to_save_in_floor_plan}
     # This will save it to a json file instead of pickling
     # Try to open a file with floor plans in it
+    for d in global_variables.floor_plan_devices:
+        devices_to_save_in_floor_plan.append({'device_name': d.__dict__['device_name'],
+                                              'image_path': d.__dict__['image_path'],
+                                              'xpos': d.__dict__['xpos'],
+                                              'ypos': d.__dict__['ypos'],
+                                              'floor_plan': global_variables.current_floor_plan})
     try:
         # TODO: If there is no file to open, then create a file
         with open('saved_locations/floor_plan_data.json') as f:
             loaded_devices = json.load(f)
-        loaded_devices[global_variables.current_floor_plan] = devices_to_pickle
+        loaded_devices[global_variables.current_floor_plan] = devices_to_save_in_floor_plan
     # If there is no floor plan saved yet it will throw an error, then it should create a new line
     except json.decoder.JSONDecodeError:
-        loaded_devices = {global_variables.current_floor_plan: devices_to_pickle}
+        loaded_devices = {global_variables.current_floor_plan: devices_to_save_in_floor_plan}
     with open('saved_locations/floor_plan_data.json', 'w') as outfile:
         json.dump(loaded_devices, outfile, indent=4)
     global_variables.made_changes = False

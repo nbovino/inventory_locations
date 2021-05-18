@@ -1,29 +1,20 @@
 {
     "apartment": [
         {
-            "device_name": "asdfasdfasdfasdf",
+            "device_name": "fgfgfg",
             "image_path": "images/device_icons/green_circle.png",
-            "xpos": 427,
-            "ypos": 158,
+            "xpos": 269,
+            "ypos": 114,
             "floor_plan": "apartment"
         }
     ],
     "Test_floor_plan": [
         {
-            "device_name": "testing device",
+            "device_name": "ghghghg",
             "image_path": "images/device_icons/green_circle.png",
-            "xpos": 265,
-            "ypos": 150,
+            "xpos": 370,
+            "ypos": 184,
             "floor_plan": "Test_floor_plan"
-        }
-    ],
-    "null": [
-        {
-            "device_name": "testing device",
-            "image_path": "images/device_icons/green_circle.png",
-            "xpos": 437,
-            "ypos": 152,
-            "floor_plan": null
         }
     ]
 }
