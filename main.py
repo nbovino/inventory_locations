@@ -121,7 +121,8 @@ def load_plan(root, canvas, floor_plan_name=None, loaded_devices=None):
         # else, say there are no devices in the floor plan
         else:
             # check to see if there are any devices saved for the floor plan and try that
-            # TODO: This is loaded when you delete the last one because the len is 0
+            # TODO: COMPLETE OVERHAUL. Load json data to global_variable and make changes to that along the way
+            # TODO: Then when save is clicked it writes the info to the json file.
             load_devices_to_floor_plan(get_devices_of_floor_plan(global_variables.current_floor_plan))
     # else - no floor plan selected
     else:
