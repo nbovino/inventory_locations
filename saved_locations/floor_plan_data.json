@@ -1,4 +1,12 @@
 {
-    "apartment": [],
+    "apartment": [
+        {
+            "device_name": "hhhhhh",
+            "image_path": "images/device_icons/green_circle.png",
+            "xpos": 435,
+            "ypos": 111,
+            "floor_plan": "apartment"
+        }
+    ],
     "Test_floor_plan": []
 }

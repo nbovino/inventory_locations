@@ -114,13 +114,14 @@ def load_plan(root, canvas, floor_plan_name=None, loaded_devices=None):
             # Display floor plan
             classes.FloorPlan(canvas, floor_plan_name + ".png")
         # If there are loaded devices, load the devices
-        if loaded_devices and len(loaded_devices) > 0:
+        if loaded_devices:
             print("THERE ARE DEVICES ON THIS FLOOR PLAN")
             # print(type(loaded_devices))
             load_devices_to_floor_plan(loaded_devices)
         # else, say there are no devices in the floor plan
         else:
             # check to see if there are any devices saved for the floor plan and try that
+            # TODO: This is loaded when you delete the last one because the len is 0
             load_devices_to_floor_plan(get_devices_of_floor_plan(global_variables.current_floor_plan))
     # else - no floor plan selected
     else:
@@ -133,18 +134,19 @@ def confirm_delete_device(confirm_window):
     # The device is being deleted from the current floor plan devices list
     print(global_variables.floor_plan_devices)
     global_variables.floor_plan_devices.remove(global_variables.selected_device)
-    program_setup.canvas.delete(global_variables.selected_device)
+    # program_setup.canvas.delete(global_variables.selected_device)
     print("AFTER DELETING THE DEVICE")
     print(global_variables.floor_plan_devices)
     # load_devices_to_floor_plan(global_variables.floor_plan_devices)
     confirm_window.destroy()
     global_variables.selected_device = None
     global_variables.made_changes = True
-    # load_plan(root=program_setup.root,
-    #           canvas=program_setup.canvas,
-    #           floor_plan_name=global_variables.current_floor_plan,
-    #           loaded_devices=global_variables.floor_plan_devices)
-    load_devices_to_floor_plan(global_variables.floor_plan_devices)
+    program_setup.canvas.delete("all")
+    load_plan(root=program_setup.root,
+              canvas=program_setup.canvas,
+              floor_plan_name=global_variables.current_floor_plan,
+              loaded_devices=global_variables.floor_plan_devices)
+    # load_devices_to_floor_plan(global_variables.floor_plan_devices)
 
 
 def cancel_delete_device(confirm_window):
@@ -192,6 +194,8 @@ def save_devices():
     # json_save_data = {program_setup.current_floor_plan: devices_to_save_in_floor_plan}
     # This will save it to a json file instead of pickling
     # Try to open a file with floor plans in it
+    print("SAVING")
+    print(global_variables.floor_plan_devices)
     for d in global_variables.floor_plan_devices:
         devices_to_save_in_floor_plan.append({'device_name': d.__dict__['device_name'],
                                               'image_path': d.__dict__['image_path'],
