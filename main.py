@@ -133,16 +133,18 @@ def confirm_delete_device(confirm_window):
     # The device is being deleted from the current floor plan devices list
     print(global_variables.floor_plan_devices)
     global_variables.floor_plan_devices.remove(global_variables.selected_device)
+    program_setup.canvas.delete(global_variables.selected_device)
     print("AFTER DELETING THE DEVICE")
     print(global_variables.floor_plan_devices)
     # load_devices_to_floor_plan(global_variables.floor_plan_devices)
     confirm_window.destroy()
     global_variables.selected_device = None
     global_variables.made_changes = True
-    load_plan(root=program_setup.root,
-              canvas=program_setup.canvas,
-              floor_plan_name=global_variables.current_floor_plan,
-              loaded_devices=global_variables.floor_plan_devices)
+    # load_plan(root=program_setup.root,
+    #           canvas=program_setup.canvas,
+    #           floor_plan_name=global_variables.current_floor_plan,
+    #           loaded_devices=global_variables.floor_plan_devices)
+    load_devices_to_floor_plan(global_variables.floor_plan_devices)
 
 
 def cancel_delete_device(confirm_window):

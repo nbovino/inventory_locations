@@ -1,20 +1,4 @@
 {
-    "apartment": [
-        {
-            "device_name": "fgfgfg",
-            "image_path": "images/device_icons/green_circle.png",
-            "xpos": 269,
-            "ypos": 114,
-            "floor_plan": "apartment"
-        }
-    ],
-    "Test_floor_plan": [
-        {
-            "device_name": "ghghghg",
-            "image_path": "images/device_icons/green_circle.png",
-            "xpos": 370,
-            "ypos": 184,
-            "floor_plan": "Test_floor_plan"
-        }
-    ]
+    "apartment": [],
+    "Test_floor_plan": []
 }
