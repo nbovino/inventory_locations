@@ -135,3 +135,29 @@
 #     def on_leave(self, enter):
 #         # self.icon.configure(text="")
 #         pass
+
+# Loads devices to floor plan
+# def load_devices_to_floor_plan(devices):
+#     print("LOAD DEVICES TO FLOOR PLAN and current FP is: " + global_variables.current_floor_plan)
+#     # Reset the floor_plan_devices to zero
+#     global_variables.floor_plan_devices = []
+#     print(type(devices))
+#     # when loading, devices is a list of dicts read from json data,
+#     # but when deleting it is reading a list of DeviceIcon objects already loaded
+#     # so when a device is deleted, it displays the floor plan but program stops before it loads the devices b/c they are objects
+#     for d in devices:
+#         print(type(d))
+#         # try:
+#         #     global_variables.floor_plan_devices.append(classes.DeviceIcon(program_setup.canvas,
+#         #                                                                   d['image_path'].split("/")[-1:][0],
+#         #                                                                   d['xpos'],
+#         #                                                                   d['ypos'],
+#         #                                                                   program_setup.root,
+#         #                                                                   d['device_name']))
+#         # except TypeError:
+#         global_variables.floor_plan_devices.append(classes.DeviceIcon(program_setup.canvas,
+#                                                                       d.__dict__['image_path'].split("/")[-1:][0],
+#                                                                       d.__dict__['xpos'],
+#                                                                       d.__dict__['ypos'],
+#                                                                       program_setup.root,
+#                                                                       d.__dict__['device_name']))

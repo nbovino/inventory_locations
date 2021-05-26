@@ -1,10 +1,10 @@
 {
     "apartment": [
         {
-            "device_name": "ghghghghghgh",
+            "device_name": "fgfgfgfg",
             "image_path": "images/device_icons/green_circle.png",
-            "xpos": 451,
-            "ypos": 198,
+            "xpos": 487,
+            "ypos": 114,
             "floor_plan": "apartment"
         }
     ],

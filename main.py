@@ -35,17 +35,21 @@ class BaseWindow(object):
         # self.load_fp_button = tk.Button(self.root, text="Load Floor Plan", command=lambda: load_plan(self.floor_plan_list))
         # The lambda that this causes to happen sends the selected item in the listbox
         self.load_fp_button = tk.Button(self.root, text="Load Floor Plan",
-                                        command=lambda: load_new_plan(root=self.root,
-                                                                      canvas=self.canvas,
-                                                                      floor_plan_name=self.floor_plan_list.floor_plan_listbox.get(self.floor_plan_list.floor_plan_listbox.curselection()[0])  #,
-                                                                      #loaded_devices=get_devices_of_floor_plan(self.floor_plan_list.floor_plan_listbox.get(self.floor_plan_list.floor_plan_listbox.curselection()[0])))
+                                        command=lambda: load_new_plan(canvas=self.canvas,
+                                                                      floor_plan_name=self.floor_plan_list.floor_plan_listbox.get(self.floor_plan_list.floor_plan_listbox.curselection()[0])
                                                                       )
                                         )
         self.load_fp_button.grid(row=11, rowspan=1, column=3, columnspan=1)
 
         # Load floorplan
-        load_new_plan(floor_plan_name=None, root=self.root, canvas=self.canvas)
+        # load_new_plan(floor_plan_name=None, canvas=self.canvas)
         self.floor_plan_list.add_all_floor_plans(sorted(global_variables.floor_plans))
+
+
+def destroy_all():
+    for widget in program_setup.root.winfo_children():
+        if isinstance(widget, tk.Toplevel):
+            widget.destroy()
 
 
 def get_saved_json_data():
@@ -74,35 +78,7 @@ def get_devices_of_floor_plan(floor_plan):
         return None
 
 
-# Loads devices to floor plan
-def load_devices_to_floor_plan(devices):
-    print("LOAD DEVICES TO FLOOR PLAN and current FP is: " + global_variables.current_floor_plan)
-    # Reset the floor_plan_devices to zero
-    global_variables.floor_plan_devices = []
-    print(type(devices))
-    # TODO: This is not working because when reading from saved data it is a list of dictionaries of the different
-    # when loading, devices is a list of dicts read from json data,
-    # but when deleting it is reading a list of DeviceIcon objects already loaded
-    # so when a device is deleted, it displays the floor plan but program stops before it loads the devices b/c they are objects
-    for d in devices:
-        print(type(d))
-        # TODO: This is not the way to do this. I should always pass the same kind of data to the function.
-        # try:
-        #     global_variables.floor_plan_devices.append(classes.DeviceIcon(program_setup.canvas,
-        #                                                                   d['image_path'].split("/")[-1:][0],
-        #                                                                   d['xpos'],
-        #                                                                   d['ypos'],
-        #                                                                   program_setup.root,
-        #                                                                   d['device_name']))
-        # except TypeError:
-        global_variables.floor_plan_devices.append(classes.DeviceIcon(program_setup.canvas,
-                                                                      d.__dict__['image_path'].split("/")[-1:][0],
-                                                                      d.__dict__['xpos'],
-                                                                      d.__dict__['ypos'],
-                                                                      program_setup.root,
-                                                                      d.__dict__['device_name']))
-
-
+# Loads devices to floor plan and clears out old list if it is populated
 def populate_floor_plan_device_list(json_data_list):
     global_variables.floor_plan_devices.clear()
     for d in json_data_list:
@@ -132,33 +108,60 @@ def load_floor_plan_after_deleting_device():
     del temp_devices
 
 
+def close_extra_window(closing):
+    closing.destroy()
+
+
+# confirmation window to make sure user wants to load a new plan before saving changes
+def confirm_load_without_saving():
+    confirm_load_window = tk.Toplevel(width=100, height=100)
+    confirm_load_window.geometry("%dx%d%+d%+d" % (200, 100, 250, 125))
+    confirm_message = tk.Label(master=confirm_load_window,
+                               text="You have not saved yet.\nLoading a new plan will lose any unsaved changes")
+    confirm_message.pack()
+    # TODO: the lambda here tries to load a new plan but made changes is still true. Need to set that to false before loading a new plan
+    confirm = tk.Button(master=confirm_load_window, text="Load without saving",
+                        command=lambda: load_new_plan(canvas=program_setup.canvas,
+                                                      floor_plan_name=program_setup.floor_plan_list.floor_plan_listbox.get(program_setup.floor_plan_list.floor_plan_listbox.curselection()[0])
+                                                      )
+                        )
+    confirm.pack()
+    cancel_button = tk.Button(master=confirm_load_window, text="Cancel",
+                              command=lambda: close_extra_window(confirm_load_window))
+    # cancel_button.grid(row=1, column=1, columnspan=1)
+    cancel_button.pack()
+
+
 # This loads from saved json data. Only when a new floor plan is loaded
-def load_new_plan(root, canvas, floor_plan_name=None, loaded_devices=None):
-    print(floor_plan_name)
-    print("Loaded devices on this floor plan:")
-    print(loaded_devices)
+def load_new_plan(canvas, floor_plan_name=None):
     # TODO: If global_variables.made_changes is True, ask the user to verify they really want to load another floor plan
     # TODO: since the changes will not be saved if they load another floor plan if it was not saved.
-    # If there is a floor plan name, load the floor plan
-    if floor_plan_name:
-        # Reassign current floor plan
-        global_variables.current_floor_plan = floor_plan_name
+    # Check if there have been changes made
+    destroy_all()
+    if not global_variables.made_changes:
+        # If there is a floor plan name, load the floor plan
+        if floor_plan_name:
+            # Reassign current floor plan
+            global_variables.current_floor_plan = floor_plan_name
 
-        # Load image of floor plan to canvas
-        classes.FloorPlan(canvas, floor_plan_name + ".png")
+            # Load image of floor plan to canvas
+            classes.FloorPlan(canvas, floor_plan_name + ".png")
 
-        # GET DATA FROM JSON FILE
-        json_data = get_saved_json_data()
+            # GET DATA FROM JSON FILE
+            json_data = get_saved_json_data()
 
-        # Populate the floor_plan_devices list with json data
-        populate_floor_plan_device_list(json_data[global_variables.current_floor_plan])
+            # Populate the floor_plan_devices list with json data
+            populate_floor_plan_device_list(json_data[global_variables.current_floor_plan])
 
-        # Delete loaded json_data to save space
-        del json_data
+            # Delete loaded json_data to save space
+            del json_data
 
-    # else - no floor plan selected
+        # else - no floor plan selected
+        else:
+            print("No floor plan selected")
     else:
-        print("No floor plan selected")
+        # Confirm you want to load before saving current floor plan
+        confirm_load_without_saving()
 
 
 def confirm_delete_device(confirm_window):
@@ -193,8 +196,8 @@ def delete_device():
     if global_variables.selected_device:
         print(global_variables.selected_device.device_name)
         confirm_delete_window = tk.Toplevel(width=100, height=100)
-        confirm_delete_window.geometry("%dx%d%+d%+d" % (200, 100, 250, 125))
-        confirm_delete_window.title("Really!?")
+        confirm_delete_window.geometry("%dx%d%+d%+d" % (200, 200, 250, 125))
+        confirm_delete_window.title("Are you sure?")
         confirm_message = tk.Label(master=confirm_delete_window, text="Do you want to delete this device?\nThis cannot be undone")
         confirm_message.pack()
         device_info = tk.Label(master=confirm_delete_window, text=global_variables.selected_device.device_name)
@@ -255,5 +258,5 @@ def save_devices():
 
 
 program_setup = BaseWindow()
-
+load_new_plan(floor_plan_name=None, canvas=program_setup.canvas)
 program_setup.root.mainloop()
