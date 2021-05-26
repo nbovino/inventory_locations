@@ -112,8 +112,17 @@ def close_extra_window(closing):
     closing.destroy()
 
 
+def confirm_load_without_saving(close_window):
+    close_window.destroy()
+    global_variables.made_changes = False
+    load_new_plan(canvas=program_setup.canvas,
+                  floor_plan_name=program_setup.floor_plan_list.floor_plan_listbox.get(
+                      program_setup.floor_plan_list.floor_plan_listbox.curselection()[0])
+                  )
+
+
 # confirmation window to make sure user wants to load a new plan before saving changes
-def confirm_load_without_saving():
+def confirm_load_without_saving_window():
     confirm_load_window = tk.Toplevel(width=100, height=100)
     confirm_load_window.geometry("%dx%d%+d%+d" % (200, 100, 250, 125))
     confirm_message = tk.Label(master=confirm_load_window,
@@ -121,9 +130,7 @@ def confirm_load_without_saving():
     confirm_message.pack()
     # TODO: the lambda here tries to load a new plan but made changes is still true. Need to set that to false before loading a new plan
     confirm = tk.Button(master=confirm_load_window, text="Load without saving",
-                        command=lambda: load_new_plan(canvas=program_setup.canvas,
-                                                      floor_plan_name=program_setup.floor_plan_list.floor_plan_listbox.get(program_setup.floor_plan_list.floor_plan_listbox.curselection()[0])
-                                                      )
+                        command=lambda: confirm_load_without_saving(confirm_load_window)
                         )
     confirm.pack()
     cancel_button = tk.Button(master=confirm_load_window, text="Cancel",
@@ -137,8 +144,8 @@ def load_new_plan(canvas, floor_plan_name=None):
     # TODO: If global_variables.made_changes is True, ask the user to verify they really want to load another floor plan
     # TODO: since the changes will not be saved if they load another floor plan if it was not saved.
     # Check if there have been changes made
-    destroy_all()
     if not global_variables.made_changes:
+        global_variables.devices_movable = False
         # If there is a floor plan name, load the floor plan
         if floor_plan_name:
             # Reassign current floor plan
@@ -161,7 +168,7 @@ def load_new_plan(canvas, floor_plan_name=None):
             print("No floor plan selected")
     else:
         # Confirm you want to load before saving current floor plan
-        confirm_load_without_saving()
+        confirm_load_without_saving_window()
 
 
 def confirm_delete_device(confirm_window):

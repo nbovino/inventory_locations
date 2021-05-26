@@ -3,8 +3,8 @@
         {
             "device_name": "fgfgfgfg",
             "image_path": "images/device_icons/green_circle.png",
-            "xpos": 487,
-            "ypos": 114,
+            "xpos": 395,
+            "ypos": 184,
             "floor_plan": "apartment"
         }
     ],
