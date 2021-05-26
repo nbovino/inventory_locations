@@ -1,6 +1,9 @@
 import os
 
+# List of DeviceIcon objects
 floor_plan_devices = []
+
+# List of floor plans that will be used to populate the list
 floor_plans = []
 
 selected_device = None
