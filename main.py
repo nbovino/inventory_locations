@@ -36,9 +36,9 @@ class BaseWindow(object):
         self.add_new_fp_button.grid(row=12, rowspan=1, column=3, columnspan=1)
 
         # TODO: make this into it's own class. Then can possibly alter it when clicking a device
-        self.device_data = tk.Label(self.root, text="No device selected")
-        self.device_data.grid(row=11, rowspan=1, column=4, columnspan=1)
-        self.new_device_button = classes.NewDeviceButton(self.canvas, self.root, global_variables.floor_plan_devices)
+        self.data_label = tk.Label(self.root, text="No device selected")
+        self.data_label.grid(row=11, rowspan=1, column=4, columnspan=1)
+        self.new_device_button = classes.NewDeviceButton(self.canvas, self.root, global_variables.floor_plan_devices, self.data_label)
 
         self.floor_plan_list.add_all_floor_plans(sorted(global_variables.floor_plans))
 
@@ -68,7 +68,8 @@ def get_devices_of_floor_plan(floor_plan):
                                                             d['xpos'],
                                                             d['ypos'],
                                                             program_setup.root,
-                                                            d['device_name']))
+                                                            d['device_name'],
+                                                            program_setup.data_label))
             # return json_data[floor_plan]
             return devices_to_return
     except:
@@ -84,7 +85,8 @@ def populate_floor_plan_device_list(json_data_list):
                                                                       d['xpos'],
                                                                       d['ypos'],
                                                                       program_setup.root,
-                                                                      d['device_name']))
+                                                                      d['device_name'],
+                                                                      program_setup.data_label))
 
 
 def load_floor_plan_after_deleting_device():
@@ -101,7 +103,8 @@ def load_floor_plan_after_deleting_device():
                                                                       d.__dict__['xpos'],
                                                                       d.__dict__['ypos'],
                                                                       program_setup.root,
-                                                                      d.__dict__['device_name']))
+                                                                      d.__dict__['device_name'],
+                                                                      program_setup.device_data))
     del temp_devices
 
 
@@ -157,6 +160,7 @@ def load_new_plan(canvas, floor_plan_name=None):
             program_setup.move_devices_label.config(text="")
             global_variables.devices_movable = False
             global_variables.selected_device = None
+            program_setup.data_label.config(text="No device selected")
 
             # Delete loaded json_data to save space
             del json_data
@@ -259,6 +263,7 @@ def save_devices():
     global_variables.devices_movable = False
     global_variables.selected_device = None
     program_setup.move_devices_label.config(text="")
+    program_setup.data_label.config(text="No device selected")
 
 #
 # def add_device():

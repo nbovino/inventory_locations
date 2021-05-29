@@ -12,12 +12,12 @@ import os
 
 class DeviceIcon(object):
 
-    def __init__(self, canvas, image_name, xpos, ypos, root, device_name):
+    def __init__(self, canvas, image_name, xpos, ypos, root, device_name, data_label):
         # This is the same variable in memory as root. So it shouldn't be creating a bunch of new variables
         self.root = root
         # print(self.root.selected_device)
         self.canvas = canvas
-        # self.data_label = data_label
+        self.data_label = data_label
         self.image_name = image_name
         self.device_name = device_name
         self.xpos, self.ypos = xpos, ypos
@@ -62,7 +62,7 @@ class DeviceIcon(object):
     def clicked(self, event):
         device_info = "Device Selected: " + self.device_name + "\nX: " + str(self.xpos) + " Y: " + str(self.ypos)
         print(device_info)
-        # self.data_label.config(text=device_info)
+        self.data_label.config(text=device_info)
         # device_data = tk.Label(self.root, text=device_info)
         # device_data.grid(row=11, rowspan=1, column=4, columnspan=1)
         global_variables.selected_device = self
@@ -89,10 +89,10 @@ class FloorPlan(object):
 
 
 class NewDeviceButton(object):
-    def __init__(self, canvas, root, all_devices):
+    def __init__(self, canvas, root, all_devices, data_label):
         self.canvas = canvas
         self.root = root
-        # self.data_label = data_label
+        self.data_label = data_label
         self.all_devices = all_devices
         self.new_device_button = tk.Button(root, text="Add Device", command=self.toggle)
         # self.new_device_button.pack(padx=40)
@@ -136,7 +136,8 @@ class NewDeviceButton(object):
                                                               event.x,
                                                               event.y,
                                                               self.root,
-                                                              device_name))
+                                                              device_name,
+                                                              self.data_label))
         global_variables.made_changes = True
 
 
