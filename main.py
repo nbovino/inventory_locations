@@ -25,8 +25,10 @@ class BaseWindow(object):
         self.save_button = tk.Button(self.root, text="Save", command=save_devices)
         # self.save_button.pack(pady=20)
         self.save_button.grid(row=5, rowspan=1, column=11, columnspan=1)
-        new_device_button = classes.NewDeviceButton(self.canvas, self.root, global_variables.floor_plan_devices)
-        move_devices_button = classes.MoveDevicesButton(self.canvas, self.root)
+        self.new_device_button = classes.NewDeviceButton(self.canvas, self.root, global_variables.floor_plan_devices)
+        self.move_devices_label = tk.Label(self.root, text="")
+        self.move_devices_label.grid(row=3, column=12)
+        self.move_devices_button = classes.MoveDevicesButton(self.canvas, self.root, self.move_devices_label)
         self.delete_device_button = tk.Button(self.root, text="Delete Device",
                                               command=delete_device)
         self.delete_device_button.grid(row=4, rowspan=1, column=11, columnspan=1)
@@ -40,6 +42,11 @@ class BaseWindow(object):
                                                                       )
                                         )
         self.load_fp_button.grid(row=11, rowspan=1, column=3, columnspan=1)
+        self.add_new_fp_button = tk.Button(self.root, text="Add New Floor Plan", command=lambda: print("Add new floor plan"))
+        self.add_new_fp_button.grid(row=12, rowspan=1, column=3, columnspan=1)
+
+        self.device_data = tk.Label(self.root, text="No device selected")
+        self.device_data.grid(row=11, rowspan=1, column=4, columnspan=1)
 
         # Load floorplan
         # load_new_plan(floor_plan_name=None, canvas=self.canvas)
@@ -128,7 +135,6 @@ def confirm_load_without_saving_window():
     confirm_message = tk.Label(master=confirm_load_window,
                                text="You have not saved yet.\nLoading a new plan will lose any unsaved changes")
     confirm_message.pack()
-    # TODO: the lambda here tries to load a new plan but made changes is still true. Need to set that to false before loading a new plan
     confirm = tk.Button(master=confirm_load_window, text="Load without saving",
                         command=lambda: confirm_load_without_saving(confirm_load_window)
                         )
@@ -141,11 +147,8 @@ def confirm_load_without_saving_window():
 
 # This loads from saved json data. Only when a new floor plan is loaded
 def load_new_plan(canvas, floor_plan_name=None):
-    # TODO: If global_variables.made_changes is True, ask the user to verify they really want to load another floor plan
-    # TODO: since the changes will not be saved if they load another floor plan if it was not saved.
     # Check if there have been changes made
     if not global_variables.made_changes:
-        global_variables.devices_movable = False
         # If there is a floor plan name, load the floor plan
         if floor_plan_name:
             # Reassign current floor plan
@@ -159,6 +162,11 @@ def load_new_plan(canvas, floor_plan_name=None):
 
             # Populate the floor_plan_devices list with json data
             populate_floor_plan_device_list(json_data[global_variables.current_floor_plan])
+
+            # Make sure the move toggle is off
+            program_setup.move_devices_label.config(text="")
+            global_variables.devices_movable = False
+            global_variables.selected_device = None
 
             # Delete loaded json_data to save space
             del json_data
@@ -258,6 +266,9 @@ def save_devices():
     with open('saved_locations/floor_plan_data.json', 'w') as outfile:
         json.dump(loaded_devices, outfile, indent=4)
     global_variables.made_changes = False
+    global_variables.devices_movable = False
+    global_variables.selected_device = None
+    program_setup.move_devices_label.config(text="")
 
 #
 # def add_device():

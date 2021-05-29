@@ -51,10 +51,12 @@ class DeviceIcon(object):
                 global_variables.made_changes = True
 
     def release(self, event):
-        print(event.x, event.y)
-        self.xpos, self.ypos = event.x, event.y
-        self.move_flag = False
-        global_variables.made_changes = True
+        # This only works if devices are movable
+        if global_variables.devices_movable:
+            print(event.x, event.y)
+            self.xpos, self.ypos = event.x, event.y
+            self.move_flag = False
+            global_variables.made_changes = True
 
     def clicked(self, event):
         print("Device Selected - X: " + str(self.xpos) + " Y: " + str(self.ypos))
@@ -91,18 +93,19 @@ class NewDeviceButton(object):
         # self.new_device_button.pack(padx=40)
         self.new_device_button.grid(row=2, rowspan=1, column=11, columnspan=1)
         self.clicked = False
-        canvas.bind("<Button-1>", self.test)
+        canvas.bind("<Button-1>", self.place_new_device)
         # print("CREATED BUTTON")
 
     def toggle(self):
-        if self.clicked:
-            self.clicked = False
-            print("Turned Off")
-        else:
-            self.clicked = True
-            print("Turned On")
+        if global_variables.current_floor_plan:
+            if self.clicked:
+                self.clicked = False
+                print("Turned Off")
+            else:
+                self.clicked = True
+                print("Turned On")
 
-    def test(self, event):
+    def place_new_device(self, event):
         if self.clicked:
             self.device_name_window = tk.Toplevel(width=100, height=100)
             self.device_name_window.geometry("%dx%d%+d%+d" % (200, 100, 250, 125))
@@ -110,21 +113,15 @@ class NewDeviceButton(object):
             self.device_name_entry = tk.Entry(master=self.device_name_window)
             # device_name.grid(row=0, column=0, columnspan=2)
             self.device_name_entry.pack(pady=10)
-            add_name_button = tk.Button(master=self.device_name_window, text="Add Device", command=lambda: self.get_value(event))
+            add_name_button = tk.Button(master=self.device_name_window, text="Add Device", command=lambda: self.create_device(event))
             # add_name_button.grid(row=1, column=0, columnspan=1)
             add_name_button.pack()
             cancel_button = tk.Button(master=self.device_name_window, text="Cancel", command=self.device_name_window.destroy)
             # cancel_button.grid(row=1, column=1, columnspan=1)
             cancel_button.pack()
-            # self.floor_plan_devices.append(DeviceIcon(self.canvas,
-            #                                    "green_circle.png",
-            #                                    event.x,
-            #                                    event.y,
-            #                                    self.root,
-            #                                    device_name))
             self.toggle()
 
-    def get_value(self, event):
+    def create_device(self, event):
         device_name = self.device_name_entry.get()
         print(str(event.x) + " | " + str(event.y))
         self.device_name_window.destroy()
@@ -139,21 +136,23 @@ class NewDeviceButton(object):
 
 
 class MoveDevicesButton(object):
-    def __init__(self, canvas, root):
+    def __init__(self, canvas, root, message_label):
         self.canvas = canvas
         self.root = root
-        self.move_devices_button = tk.Button(root, text="Move Devices", command=self.toggle)
+        self.move_devices_button = tk.Button(root, text="Move Devices", command=lambda: self.toggle(message_label=message_label))
         # self.new_device_button.pack(padx=40)
         self.move_devices_button.grid(row=3, rowspan=1, column=11, columnspan=1)
         self.clicked = False
         # canvas.bind("<Button-1>", self.test)
         # print("CREATED BUTTON")
 
-    def toggle(self):
+    def toggle(self, message_label=""):
         if global_variables.devices_movable:
             global_variables.devices_movable = False
+            message_label.config(text="")
         else:
             global_variables.devices_movable = True
+            message_label.config(text="Can Move")
 
 
 class FloorPlanList(object):

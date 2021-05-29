@@ -3,8 +3,22 @@
         {
             "device_name": "fgfgfgfg",
             "image_path": "images/device_icons/green_circle.png",
-            "xpos": 395,
-            "ypos": 184,
+            "xpos": 478,
+            "ypos": 131,
+            "floor_plan": "apartment"
+        },
+        {
+            "device_name": "Hello there",
+            "image_path": "images/device_icons/green_circle.png",
+            "xpos": 258,
+            "ypos": 124,
+            "floor_plan": "apartment"
+        },
+        {
+            "device_name": "vacuum",
+            "image_path": "images/device_icons/green_circle.png",
+            "xpos": 347,
+            "ypos": 231,
             "floor_plan": "apartment"
         }
     ],
