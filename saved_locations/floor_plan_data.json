@@ -1,26 +1,20 @@
 {
     "apartment": [
         {
-            "device_name": "fgfgfgfg",
+            "device_name": "sdsdsdsd",
             "image_path": "images/device_icons/green_circle.png",
-            "xpos": 478,
-            "ypos": 131,
-            "floor_plan": "apartment"
-        },
-        {
-            "device_name": "Hello there",
-            "image_path": "images/device_icons/green_circle.png",
-            "xpos": 258,
-            "ypos": 124,
-            "floor_plan": "apartment"
-        },
-        {
-            "device_name": "vacuum",
-            "image_path": "images/device_icons/green_circle.png",
-            "xpos": 347,
-            "ypos": 231,
+            "xpos": 439,
+            "ypos": 147,
             "floor_plan": "apartment"
         }
     ],
-    "Test_floor_plan": []
+    "Test_floor_plan": [
+        {
+            "device_name": "wewewewe",
+            "image_path": "images/device_icons/green_circle.png",
+            "xpos": 408,
+            "ypos": 199,
+            "floor_plan": "Test_floor_plan"
+        }
+    ]
 }

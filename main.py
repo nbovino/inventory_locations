@@ -12,29 +12,19 @@ class BaseWindow(object):
     def __init__(self):
         self.root = tk.Tk()
         self.root.title('Inventory Locations')
-        # self.current_floor_plan = None
-        # root.iconbitmap("\\images\\greeen_circle.png")
         self.root.geometry("800x600")
         self.canvas = tk.Canvas(self.root, width=global_variables.w, height=global_variables.h, bg="white")
-        # self.canvas.pack(pady=20)
         self.canvas.grid(row=1, rowspan=10, column=1, columnspan=10)
-        # self.alert_message = tk.Label(self.root, text="HELLO")
-        # Pack
-        # self.alert_message.pack(pady=30, side=tk.RIGHT)
-        # self.alert_message.grid(row=10, rowspan=1, column=1, columnspan=1)
         self.save_button = tk.Button(self.root, text="Save", command=save_devices)
-        # self.save_button.pack(pady=20)
         self.save_button.grid(row=5, rowspan=1, column=11, columnspan=1)
-        self.new_device_button = classes.NewDeviceButton(self.canvas, self.root, global_variables.floor_plan_devices)
         self.move_devices_label = tk.Label(self.root, text="")
         self.move_devices_label.grid(row=3, column=12)
         self.move_devices_button = classes.MoveDevicesButton(self.canvas, self.root, self.move_devices_label)
         self.delete_device_button = tk.Button(self.root, text="Delete Device",
                                               command=delete_device)
         self.delete_device_button.grid(row=4, rowspan=1, column=11, columnspan=1)
-        # classes.DeleteDeviceButton(program_canvas.canvas)
         self.floor_plan_list = classes.FloorPlanList(self.root)
-        # self.load_fp_button = tk.Button(self.root, text="Load Floor Plan", command=lambda: load_plan(self.floor_plan_list))
+
         # The lambda that this causes to happen sends the selected item in the listbox
         self.load_fp_button = tk.Button(self.root, text="Load Floor Plan",
                                         command=lambda: load_new_plan(canvas=self.canvas,
@@ -45,11 +35,11 @@ class BaseWindow(object):
         self.add_new_fp_button = tk.Button(self.root, text="Add New Floor Plan", command=lambda: print("Add new floor plan"))
         self.add_new_fp_button.grid(row=12, rowspan=1, column=3, columnspan=1)
 
+        # TODO: make this into it's own class. Then can possibly alter it when clicking a device
         self.device_data = tk.Label(self.root, text="No device selected")
         self.device_data.grid(row=11, rowspan=1, column=4, columnspan=1)
+        self.new_device_button = classes.NewDeviceButton(self.canvas, self.root, global_variables.floor_plan_devices)
 
-        # Load floorplan
-        # load_new_plan(floor_plan_name=None, canvas=self.canvas)
         self.floor_plan_list.add_all_floor_plans(sorted(global_variables.floor_plans))
 
 
